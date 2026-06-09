@@ -1,0 +1,3104 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="atelier-ling">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1200">
+<title>Atelier Ling 凌晨製作所</title>
+<style>
+
+/* ===== tokens/fonts.css ===== */
+/* ============================================================
+   Hearth Studio — Webfonts
+   One shared set; themes pick which families to use via
+   --font-heading / --font-body. Loaded from Google Fonts CDN.
+   To self-host, replace with local @font-face → assets/fonts/.
+   ------------------------------------------------------------
+   Cormorant Garamond  — fine French serif (house heading)
+   Hanken Grotesk      — humanist sans (house body)
+   Inter               — neutral grotesque (Atelier Ling body)
+   Noto Serif TC       — CJK serif heading
+   Noto Sans TC        — CJK sans body
+   Noto Serif JP       — JP serif heading (Hoshi Onsen, fine weights)
+   Noto Sans JP        — JP sans body (Hoshi Onsen)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400;500;600&family=Noto+Serif+TC:wght@400;500;600;700&display=swap');
+
+
+/* ===== tokens/scale.css ===== */
+/* ============================================================
+   Hearth Studio — CORE · Invariant Scale
+   These tokens are the SAME across every brand. They define the
+   skeleton (rhythm, type ramp, motion, layout). The skinnable
+   values (color/font/radius/density/photo) live in theme files.
+   ============================================================ */
+
+:root {
+  /* ---- Spacing · 4px grid (invariant) ---- */
+  --space-0:  0;
+  --space-1:  0.25rem;  /*  4 */
+  --space-2:  0.5rem;   /*  8 */
+  --space-3:  0.75rem;  /* 12 */
+  --space-4:  1rem;     /* 16 */
+  --space-5:  1.5rem;   /* 24 */
+  --space-6:  2rem;     /* 32 */
+  --space-7:  3rem;     /* 48 */
+  --space-8:  4rem;     /* 64 */
+  --space-9:  6rem;     /* 96 */
+  --space-10: 8rem;     /* 128 */
+  --space-11: 11rem;    /* 176 */
+
+  /* ---- Type ramp (invariant sizes; families/colors are themed) ---- */
+  --text-display: clamp(2.75rem, 1.4rem + 5.6vw, 5.25rem); /* @kind spacing */
+  --text-h1:      clamp(2.15rem, 1.5rem + 2.7vw, 3.25rem); /* @kind spacing */
+  --text-h2:      clamp(1.65rem, 1.25rem + 1.7vw, 2.4rem); /* @kind spacing */
+  --text-h3:      1.5rem;
+  --text-h4:      1.2rem;
+  --text-lead:    1.225rem;
+  --text-body:    1rem;
+  --text-sm:      0.875rem;
+  --text-xs:      0.75rem;
+  --text-label:   0.72rem;
+
+  /* ---- Line height & tracking (invariant) ---- */
+  --leading-tight:   1.04;
+  --leading-snug:    1.18;
+  --leading-normal:  1.55;
+  --leading-relaxed: 1.78;   /* long CJK reading */
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:  0.1em;
+  --tracking-wider: 0.22em;  /* eyebrows / small caps */
+
+  /* ---- Weights (invariant) ---- */
+  --fw-regular:  400; /* @kind other */
+  --fw-medium:   500; /* @kind other */
+  --fw-semibold: 600; /* @kind other */
+  --fw-bold:     700; /* @kind other */
+
+  /* ---- Layout (invariant) ---- */
+  --container:        1240px;
+  --container-narrow: 720px;
+  --gutter: clamp(1.25rem, 5vw, 5rem); /* @kind spacing */
+
+  /* ---- Responsive breakpoints (reference values; use in @media) ----
+     sm 480 · md 768 · lg 1024 · xl 1280 */
+  --bp-sm: 480px;  /* @kind spacing */
+  --bp-md: 768px;  /* @kind spacing */
+  --bp-lg: 1024px; /* @kind spacing */
+  --bp-xl: 1280px; /* @kind spacing */
+
+  /* ---- Motion · slow & elegant house default (invariant) ---- */
+  --ease-out:  cubic-bezier(0.22, 0.61, 0.36, 1); /* @kind other */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);      /* @kind other */
+  --dur-1: 180ms; /* @kind other */
+  --dur-2: 320ms; /* @kind other */
+  --dur-3: 520ms; /* @kind other */
+
+  /* ---- Elevation · house keeps shadows almost absent (invariant scale) ---- */
+  --shadow-none: none;
+  --shadow-hair: 0 0 0 1px var(--c-border);
+  --shadow-sm: 0 1px 2px rgba(28, 24, 20, 0.05); /* @kind other */
+  --shadow-md: 0 10px 30px -14px rgba(28, 24, 20, 0.18); /* @kind other */
+  --shadow-lg: 0 26px 60px -28px rgba(28, 24, 20, 0.26); /* @kind other */
+
+  /* ---- Z-index (invariant) ---- */
+  --z-header: 50; /* @kind other */
+  --z-overlay: 90; /* @kind other */
+  --z-modal: 100; /* @kind other */
+  --z-toast: 120; /* @kind other */
+
+  /* ---- Invariant radii helpers (pill stays round for dots/avatars) ---- */
+  --radius-pill: 999px;
+}
+
+
+/* ===== tokens/theme-core.css ===== */
+/* ============================================================
+   Hearth Studio — SKINNABLE LAYER · House defaults
+   Every value here is a SEMANTIC TOKEN that components consume.
+   The :root values below are the studio's house theme
+   (爐光設計室 預設膚) — restrained, warm, artisanal.
+
+   A brand theme overrides ONLY these names inside a single
+   [data-theme="…"] scope (see themes/<brand>/theme.css).
+   Components never reference raw hex — only these tokens — so a
+   new brand = a new token set, no component changes.
+
+   Skinnable axes:  color · font · radius · density · photo-tone
+   ============================================================ */
+
+:root {
+  /* ───────── COLOR ─────────
+     primary · secondary · accent · background · text · warning  */
+
+  /* Surfaces — 暖白 / 未漂白棉布感 (unbleached cotton) */
+  --c-bg:        #F4EFE6;   /* page */
+  --c-surface:   #FBF8F1;   /* card / raised */
+  --c-surface-2: #ECE5D7;   /* sunken / hover fill */
+
+  /* Text — 深炭, never pure black */
+  --c-text:        #2A2521;
+  --c-text-muted:  #6A6055;
+  --c-text-subtle: #948876;
+
+  /* Primary — restrained dark (buttons read as deep charcoal) */
+  --c-primary:      #2A2521;
+  --c-primary-hover:#171311;
+  --c-on-primary:   #F4EFE6;
+
+  /* Secondary — stone */
+  --c-secondary:    #7C7363;
+  --c-on-secondary: #FBF8F1;
+
+  /* Accent — 爐光 ember/amber (use sparingly) */
+  --c-accent:       #B0732F;
+  --c-accent-hover: #935E22;
+  --c-on-accent:    #FBF8F1;
+
+  /* Lines & focus */
+  --c-border:        #E0D7C6;
+  --c-border-strong: #CBBFA8;
+  --c-ring:          #B0732F;
+
+  /* Status (semantic; themeable) */
+  --c-success:    #5E7152;  --c-success-bg: #E7ECDD;
+  --c-warning:    #9A6B1F;  --c-warning-bg: #F3E8D2;
+  --c-danger:     #9A4530;  --c-danger-bg:  #F1E1DA;
+  --c-info:       #4F6173;  --c-info-bg:    #E4EAEF;
+
+  /* ───────── FONT ─────────
+     heading (serif, French hand) · body (humanist sans) · CJK chained */
+  --font-heading: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
+  --font-body:    "Hanken Grotesk", "Noto Sans TC", -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Optical scale for serif headings (themes may bump for chunkier serifs) */
+  --font-heading-scale: 1;
+
+  /* ───────── TRACKING (skinnable) ─────────
+     Brands control "breathing room". House = tight editorial serif.
+     A calmer brand (e.g. a ryokan) widens these for more air. */
+  --tracking-heading: var(--tracking-tight);   /* applied to h1/h2/.u-heading */
+  --tracking-body:    var(--tracking-normal);  /* applied to body copy */
+  --tracking-eyebrow: var(--tracking-wider);   /* applied to eyebrows/labels */
+
+  /* ───────── RADIUS ─────────
+     0 = 職人感 · 4px = 現代 · 8px = 親切. House = near-square. */
+  --radius: 2px;
+  --radius-control: var(--radius);
+  --radius-card:    var(--radius);
+
+  /* ───────── PHOTO TONE ─────────
+     applied to imagery via .u-photo / <img> in cards.
+     House baseline = honest, lightly warm. */
+  --photo-filter: saturate(0.98) contrast(1.01); /* @kind other */
+  --photo-bg: #E6DDCC; /* placeholder plate tone */
+}
+
+/* ───────── DENSITY ─────────
+   Sets control padding, card padding, section rhythm & control height.
+   Default = comfortable. Override with [data-density="compact|loose"]. */
+:root,
+[data-density="comfortable"] {
+  --pad-control-x: var(--space-5);  /* 24 */
+  --pad-control-y: 0.75rem;
+  --control-h: 46px;
+  --pad-card: var(--space-6);       /* 32 */
+  --gap-section: var(--space-9);    /* 96 */
+  --gap-stack: var(--space-5);      /* 24 */
+}
+
+
+/* ===== tokens/density.css ===== */
+/* ============================================================
+   Hearth Studio — CORE · Density scopes
+   Apply data-density on any wrapper (or <html>) to shift the
+   whole tree's rhythm. Brands may set a default density in
+   their theme; pages can override locally.
+   ============================================================ */
+
+[data-density="compact"] {
+  --pad-control-x: var(--space-4);  /* 16 */
+  --pad-control-y: 0.5rem;
+  --control-h: 38px;
+  --pad-card: var(--space-5);       /* 24 */
+  --gap-section: var(--space-7);    /* 48 */
+  --gap-stack: var(--space-4);      /* 16 */
+}
+
+[data-density="loose"] {
+  --pad-control-x: var(--space-6);  /* 32 */
+  --pad-control-y: 1rem;
+  --control-h: 54px;
+  --pad-card: var(--space-7);       /* 48 */
+  --gap-section: var(--space-11);   /* 176 */
+  --gap-stack: var(--space-6);      /* 32 */
+}
+
+
+/* ===== tokens/base.css ===== */
+/* ============================================================
+   Hearth Studio — CORE · Base elements & utilities
+   Pure consumers of semantic tokens, so every surface inherits
+   the active theme automatically.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-body);
+  color: var(--c-text);
+  background: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, .u-heading {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-semibold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-heading);
+  color: var(--c-text);
+  margin: 0 0 0.5em;
+}
+h1 { font-size: var(--text-h1); }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); letter-spacing: var(--tracking-body); }
+h4, h5, h6 {
+  font-family: var(--font-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--leading-snug);
+  color: var(--c-text);
+  margin: 0 0 0.5em;
+}
+p { margin: 0 0 1em; text-wrap: pretty; }
+a { color: var(--c-accent); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+strong { font-weight: var(--fw-semibold); }
+hr { border: 0; border-top: 1px solid var(--c-border); margin: var(--space-5) 0; }
+::selection { background: var(--c-accent); color: var(--c-on-accent); }
+
+img { max-width: 100%; display: block; }
+
+/* Visible, theme-aware focus for accessibility */
+:focus-visible {
+  outline: 2px solid var(--c-ring);
+  outline-offset: 2px;
+}
+
+/* ---- Utilities ---- */
+.u-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+.u-heading-font { font-family: var(--font-heading); }
+.u-body-font    { font-family: var(--font-body); }
+.u-muted   { color: var(--c-text-muted); }
+.u-subtle  { color: var(--c-text-subtle); }
+.u-lead    { font-size: var(--text-lead); line-height: var(--leading-relaxed); color: var(--c-text-muted); }
+.u-container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.u-narrow    { max-width: var(--container-narrow); margin-inline: auto; }
+
+/* Imagery picks up the theme's photo tone */
+.u-photo { filter: var(--photo-filter); background: var(--photo-bg); }
+
+/* The house "rule" motif — a hairline kicker under eyebrows */
+.u-rule { width: 40px; height: 1px; background: var(--c-text); border: 0; margin: var(--space-4) 0; opacity: 0.5; }
+
+/* Screen-reader only */
+.u-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+
+/* ===== themes/atelier-ling/theme.css ===== */
+/* ============================================================
+   THEME · Atelier Ling 凌晨製作所
+   深夜手作烘焙 — 法式職人 × 深夜工作室 × 紀實感
+   (late-night handmade bakery — French artisan × midnight
+    studio × documentary feel)
+
+   This file overrides ONLY the skinnable semantic tokens inside
+   one scope. It changes nothing about the core components — drop
+   data-theme="atelier-ling" on <html> (or any wrapper) and the
+   whole mother system re-skins.
+
+   Palette:  暖白底 · 深夜藍黑 · 烤箱金棕 · 麵團米色
+   Radius:   0  (完全方正 — artisanal, no rounding)
+   Heading:  fine Cormorant serif   Body: Inter-grotesque
+   Photo:    documentary — warm, lightly desaturated, a touch dark
+   ============================================================ */
+
+[data-theme="atelier-ling"] {
+  /* ── COLOR ── */
+  /* 暖白底 — warm dough-paper ground */
+  --c-bg:        #EFE7D7;
+  --c-surface:   #F6F0E3;
+  --c-surface-2: #E2D6BE;   /* 麵團米色 dough beige */
+
+  /* text — 深夜藍黑 midnight blue-black, not pure black */
+  --c-text:        #19222F;
+  --c-text-muted:  #4C5666;
+  --c-text-subtle: #8A8475;
+
+  /* primary — 深夜藍黑 (dark buttons read midnight, not charcoal) */
+  --c-primary:       #182331;
+  --c-primary-hover: #0E1620;
+  --c-on-primary:    #EFE7D7;
+
+  /* secondary — 麵團米色 dough, for soft fills on dark */
+  --c-secondary:    #C9B68F;
+  --c-on-secondary: #182331;
+
+  /* accent — 烤箱金棕 oven gold-brown */
+  --c-accent:       #AE6E2E;
+  --c-accent-hover: #8E561F;
+  --c-on-accent:    #F6F0E3;
+
+  /* lines & focus */
+  --c-border:        #DBCDB2;
+  --c-border-strong: #C2AE89;
+  --c-ring:          #AE6E2E;
+
+  /* status — tuned warm to sit on dough paper */
+  --c-success:    #5C6B4A;  --c-success-bg: #E4E5CE;
+  --c-warning:    #97681B;  --c-warning-bg: #EFE2C4;
+  --c-danger:     #97402A;  --c-danger-bg:  #EBDBCF;
+  --c-info:       #3E4F60;  --c-info-bg:    #DCE2E4;
+
+  /* ── FONT ── */
+  --font-heading: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
+  --font-body:    "Inter", "Noto Sans TC", -apple-system, "Segoe UI", sans-serif;
+  --font-heading-scale: 1.04;
+
+  /* ── RADIUS ── 0 = 完全方正 artisanal */
+  --radius: 0px;
+
+  /* ── PHOTO TONE ── documentary: warm, lightly desaturated, dim */
+  --photo-filter: saturate(0.86) contrast(1.05) brightness(0.96) sepia(0.08); /* @kind other */
+  --photo-bg: #2A3340;
+}
+
+
+/* ===== themes/hoshi-onsen/theme.css ===== */
+/* ============================================================
+   THEME · Hoshi Onsen 星之溫泉
+   山林裡的小型精品溫泉旅館 — 日式侘寂 × 山林靜謐 × 溫潤木質感
+   (small luxury hot-spring ryokan in the mountains — wabi-sabi ×
+    forest stillness × warm timber)
+
+   Deliberately the OPPOSITE of Atelier Ling on every skinnable
+   axis, to stress-test the换膚 mechanism:
+     · cool misty grey ground   (vs. warm dough paper)
+     · ink-black, green-grey    (vs. midnight blue-black)
+     · hinoki-cypress brown     (vs. oven gold-brown)
+     · radius 4px 現代          (vs. 0px 職人感)
+     · wider tracking, more air (vs. tight editorial)
+     · JP serif + sans          (vs. Cormorant + Inter)
+     · cool, misty photo tone   (vs. warm, dim documentary)
+   Density: applied per-page as data-density="loose".
+   ============================================================ */
+
+[data-theme="hoshi-onsen"] {
+  /* ── COLOR ── */
+  /* 極淺霧灰 — cool misty grey ground (not warm) */
+  --c-bg:        #ECEEED;
+  --c-surface:   #F5F6F4;   /* 和紙米白 washi-white card */
+  --c-surface-2: #DDE1DE;   /* sunken / hover, cool */
+
+  /* 墨黑 — ink black with a green-grey cast */
+  --c-text:        #202623;
+  --c-text-muted:  #56605B;
+  --c-text-subtle: #8A938D;
+
+  /* primary — 墨黑 (calm dark, slightly green) */
+  --c-primary:       #232A26;
+  --c-primary-hover: #141916;
+  --c-on-primary:    #F5F6F4;
+
+  /* secondary — 石苔綠 moss green */
+  --c-secondary:    #6E7A63;
+  --c-on-secondary: #F5F6F4;
+
+  /* accent — 溫潤檜木棕 warm hinoki, green-leaning brown */
+  --c-accent:       #8A6A45;
+  --c-accent-hover: #6F5436;
+  --c-on-accent:    #F5F6F4;
+
+  /* lines & focus — cool, soft */
+  --c-border:        #D2D7D3;
+  --c-border-strong: #B7BEB8;
+  --c-ring:          #8A6A45;
+
+  /* status — 朱漆紅 vermilion (low saturation) for danger; cool greens */
+  --c-success:    #5B7059;  --c-success-bg: #DEE6DD;
+  --c-warning:    #9A7A3C;  --c-warning-bg: #ECE3CF;
+  --c-danger:     #9A4A3E;  --c-danger-bg:  #EBDCD7;   /* 朱漆紅 */
+  --c-info:       #4E6168;  --c-info-bg:    #DCE5E6;
+
+  /* ── FONT ── JP serif heading (fine weight) + clean sans body ── */
+  --font-heading: "Noto Serif JP", "Noto Serif TC", "Cormorant Garamond", serif;
+  --font-body:    "Noto Sans JP", "Inter", "Noto Sans TC", -apple-system, sans-serif;
+  --font-heading-scale: 1;
+
+  /* ── TRACKING ── wider, more breathing room than Atelier Ling ── */
+  --tracking-heading: 0.04em;
+  --tracking-body:    0.02em;
+  --tracking-eyebrow: 0.34em;
+
+  /* ── RADIUS ── 4px 現代 (not 0) ── */
+  --radius: 4px;
+
+  /* ── PHOTO TONE ── cool, misty, low saturation, natural light ── */
+  --photo-filter: saturate(0.78) contrast(0.98) brightness(1.03) hue-rotate(-6deg); /* @kind other */
+  --photo-bg: #B9C2BE;
+}
+
+
+html, body { margin: 0; background: var(--c-bg); }
+#root { min-height: 100vh; }
+</style>
+<script>window.AL_SPA = true;</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+/* AUTO-MIRROR of canonical components/ for standalone pages. Do not hand-edit. */
+
+// ===== components/core/Button.jsx =====
+/**
+ * Hearth Studio — Button (Core)
+ * Theme-driven action. Reads only semantic tokens, so it re-skins with
+ * the active [data-theme]. Padding/height follow the active density.
+ */
+function Button({
+  variant = "primary",
+  size = "md",
+  iconLeft = null,
+  iconRight = null,
+  full = false,
+  disabled = false,
+  type = "button",
+  onClick,
+  children,
+  style = {},
+  ...rest
+}) {
+  const [hover, setHover] = React.useState(false);
+  const [active, setActive] = React.useState(false);
+
+  // size tweaks ride on top of density-driven control height
+  const sizePad = { sm: "0 0.95rem", md: "0 var(--pad-control-x)", lg: "0 calc(var(--pad-control-x) + 0.5rem)" };
+  const sizeH = { sm: "calc(var(--control-h) - 8px)", md: "var(--control-h)", lg: "calc(var(--control-h) + 8px)" };
+  const sizeFont = { sm: "var(--text-sm)", md: "0.95rem", lg: "var(--text-lead)" };
+
+  const palettes = {
+    primary: { bg: "var(--c-primary)", bgH: "var(--c-primary-hover)", fg: "var(--c-on-primary)", bd: "transparent" },
+    accent:  { bg: "var(--c-accent)",  bgH: "var(--c-accent-hover)",  fg: "var(--c-on-accent)",  bd: "transparent" },
+    outline: { bg: hover ? "var(--c-surface-2)" : "transparent", bgH: "var(--c-surface-2)", fg: "var(--c-text)", bd: "var(--c-border-strong)" },
+    ghost:   { bg: hover ? "var(--c-surface-2)" : "transparent", bgH: "var(--c-surface-2)", fg: "var(--c-accent)", bd: "transparent" },
+  };
+  const p = palettes[variant] || palettes.primary;
+
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => { setHover(false); setActive(false); }}
+      onMouseDown={() => setActive(true)}
+      onMouseUp={() => setActive(false)}
+      style={{
+        display: full ? "flex" : "inline-flex",
+        width: full ? "100%" : "auto",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "0.55rem",
+        height: sizeH[size],
+        padding: sizePad[size],
+        fontFamily: "var(--font-body)",
+        fontSize: sizeFont[size],
+        fontWeight: "var(--fw-semibold)",
+        letterSpacing: "0.01em",
+        lineHeight: 1,
+        whiteSpace: "nowrap",
+        color: p.fg,
+        background: active && !disabled ? p.bgH : p.bg,
+        border: `1px solid ${p.bd}`,
+        borderRadius: "var(--radius-control)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.42 : 1,
+        transform: active && !disabled ? "translateY(0.5px)" : "none",
+        transition: "background var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out)",
+        userSelect: "none",
+        ...style,
+      }}
+      {...rest}
+    >
+      {iconLeft ? <span style={{ display: "inline-flex" }}>{iconLeft}</span> : null}
+      {children}
+      {iconRight ? <span style={{ display: "inline-flex" }}>{iconRight}</span> : null}
+    </button>
+  );
+}
+
+// ===== components/core/Badge.jsx =====
+/**
+ * Hearth Studio — Badge (Core)
+ * Compact label/pill. Soft (tinted) or solid. Reads only semantic tokens,
+ * so its corners follow the theme radius (round in house, square in Atelier Ling).
+ */
+function Badge({
+  children,
+  tone = "neutral",
+  solid = false,
+  dot = false,
+  style = {},
+  ...rest
+}) {
+  const tones = {
+    neutral: { soft: ["var(--c-surface-2)", "var(--c-text-muted)"], solid: ["var(--c-text)", "var(--c-bg)"] },
+    accent:  { soft: ["var(--c-warning-bg)", "var(--c-accent)"],    solid: ["var(--c-accent)", "var(--c-on-accent)"] },
+    success: { soft: ["var(--c-success-bg)", "var(--c-success)"],   solid: ["var(--c-success)", "#fff"] },
+    warning: { soft: ["var(--c-warning-bg)", "var(--c-warning)"],   solid: ["var(--c-warning)", "#fff"] },
+    danger:  { soft: ["var(--c-danger-bg)", "var(--c-danger)"],     solid: ["var(--c-danger)", "#fff"] },
+    info:    { soft: ["var(--c-info-bg)", "var(--c-info)"],         solid: ["var(--c-info)", "#fff"] },
+  };
+  const [bg, fg] = (tones[tone] || tones.neutral)[solid ? "solid" : "soft"];
+
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.4rem",
+        padding: "0.2rem 0.6rem",
+        fontFamily: "var(--font-body)",
+        fontSize: "var(--text-xs)",
+        fontWeight: "var(--fw-semibold)",
+        lineHeight: 1.5,
+        letterSpacing: "0.02em",
+        color: fg,
+        background: bg,
+        borderRadius: "var(--radius-control)",
+        whiteSpace: "nowrap",
+        ...style,
+      }}
+      {...rest}
+    >
+      {dot ? <span style={{ width: 6, height: 6, borderRadius: 999, background: "currentColor" }} /> : null}
+      {children}
+    </span>
+  );
+}
+
+// ===== components/core/Tag.jsx =====
+/**
+ * Hearth Studio — Tag (Core)
+ * Outlined, selectable filter chip. Fills with the theme accent/primary when
+ * selected. Corners follow the theme radius.
+ */
+function Tag({
+  children,
+  selected = false,
+  onClick,
+  onRemove,
+  style = {},
+  ...rest
+}) {
+  const [hover, setHover] = React.useState(false);
+  const interactive = !!onClick;
+
+  return (
+    <span
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.45rem",
+        padding: "0.32rem 0.8rem",
+        fontFamily: "var(--font-body)",
+        fontSize: "var(--text-sm)",
+        fontWeight: "var(--fw-medium)",
+        lineHeight: 1.4,
+        color: selected ? "var(--c-on-primary)" : "var(--c-text-muted)",
+        background: selected ? "var(--c-primary)" : hover && interactive ? "var(--c-surface-2)" : "transparent",
+        border: `1px solid ${selected ? "var(--c-primary)" : "var(--c-border-strong)"}`,
+        borderRadius: "var(--radius-control)",
+        cursor: interactive ? "pointer" : "default",
+        transition: "background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out)",
+        userSelect: "none",
+        ...style,
+      }}
+      {...rest}
+    >
+      {children}
+      {onRemove ? (
+        <span
+          onClick={(e) => { e.stopPropagation(); onRemove(e); }}
+          style={{ display: "inline-flex", marginRight: -2, opacity: 0.7, cursor: "pointer", fontSize: "1rem", lineHeight: 1 }}
+          aria-label="Remove"
+        >×</span>
+      ) : null}
+    </span>
+  );
+}
+
+// ===== components/core/Card.jsx =====
+/**
+ * Hearth Studio — Card (Core)
+ * Editorial content card: optional cover (image URL or node), eyebrow, serif
+ * title, meta, body, footer. House keeps it near-flat; lifts subtly when
+ * interactive. Corners + padding follow theme + density.
+ */
+function Card({
+  image = null,
+  cover = null,
+  imageAlt = "",
+  imageRatio = "4 / 3",
+  eyebrow = null,
+  title = null,
+  meta = null,
+  footer = null,
+  interactive = false,
+  onClick,
+  children,
+  style = {},
+  ...rest
+}) {
+  const [hover, setHover] = React.useState(false);
+  const lift = interactive && hover;
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        background: "var(--c-surface)",
+        border: "1px solid var(--c-border)",
+        borderRadius: "var(--radius-card)",
+        overflow: "hidden",
+        cursor: interactive ? "pointer" : "default",
+        boxShadow: lift ? "var(--shadow-md)" : "var(--shadow-sm)",
+        transform: lift ? "translateY(-2px)" : "none",
+        transition: "box-shadow var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out)",
+        ...style,
+      }}
+      {...rest}
+    >
+      {cover ? (
+        <div style={{ overflow: "hidden" }}>{cover}</div>
+      ) : image ? (
+        <div style={{ aspectRatio: imageRatio, overflow: "hidden", background: "var(--photo-bg)" }}>
+          <img
+            src={image}
+            alt={imageAlt}
+            style={{
+              width: "100%", height: "100%", objectFit: "cover", display: "block",
+              filter: "var(--photo-filter)",
+              transform: lift ? "scale(1.035)" : "scale(1)",
+              transition: "transform var(--dur-3) var(--ease-out)",
+            }}
+          />
+        </div>
+      ) : null}
+
+      <div style={{ padding: "var(--pad-card)", display: "flex", flexDirection: "column", gap: "0.5rem", flex: 1 }}>
+        {eyebrow ? (
+          <div style={{
+            fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+            letterSpacing: "var(--tracking-wider)", textTransform: "uppercase", color: "var(--c-accent)",
+          }}>{eyebrow}</div>
+        ) : null}
+
+        {title ? (
+          <h3 style={{
+            fontFamily: "var(--font-heading)", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h3)",
+            lineHeight: 1.14, letterSpacing: 0, color: "var(--c-text)", margin: 0,
+          }}>{title}</h3>
+        ) : null}
+
+        {meta ? (
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{meta}</div>
+        ) : null}
+
+        {children ? (
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "0.95rem", lineHeight: "var(--leading-normal)", color: "var(--c-text-muted)" }}>{children}</div>
+        ) : null}
+
+        {footer ? <div style={{ marginTop: "auto", paddingTop: "0.75rem" }}>{footer}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+// ===== components/core/Modal.jsx =====
+/**
+ * Hearth Studio — Modal (Core)
+ * Centered dialog with a scrim. Theme-driven surface, corners and motion.
+ * Closes on scrim click and Esc. Renders nothing when closed.
+ */
+function Modal({
+  open = false,
+  onClose,
+  title = null,
+  footer = null,
+  width = 460,
+  children,
+}) {
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => { if (e.key === "Escape" && onClose) onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: "var(--z-modal)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "var(--space-5)",
+        background: "color-mix(in oklab, var(--c-text) 46%, transparent)",
+        backdropFilter: "blur(2px)",
+        animation: "hearth-fade var(--dur-2) var(--ease-out)",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%", maxWidth: width,
+          background: "var(--c-surface)",
+          border: "1px solid var(--c-border)",
+          borderRadius: "var(--radius-card)",
+          boxShadow: "var(--shadow-lg)",
+          overflow: "hidden",
+          animation: "hearth-rise var(--dur-2) var(--ease-out)",
+        }}
+      >
+        {title ? (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            gap: "1rem", padding: "var(--space-5) var(--pad-card) 0",
+          }}>
+            <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h3)", margin: 0, color: "var(--c-text)" }}>{title}</h3>
+            <button onClick={onClose} aria-label="Close" style={{
+              border: "none", background: "transparent", cursor: "pointer",
+              fontSize: "1.5rem", lineHeight: 1, color: "var(--c-text-subtle)",
+            }}>×</button>
+          </div>
+        ) : null}
+
+        <div style={{ padding: "var(--space-4) var(--pad-card)", color: "var(--c-text-muted)", fontFamily: "var(--font-body)", lineHeight: "var(--leading-normal)" }}>
+          {children}
+        </div>
+
+        {footer ? (
+          <div style={{ display: "flex", gap: "0.6rem", justifyContent: "flex-end", padding: "0 var(--pad-card) var(--pad-card)" }}>{footer}</div>
+        ) : null}
+      </div>
+
+      <style>{`
+        @keyframes hearth-fade { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes hearth-rise { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+      `}</style>
+    </div>
+  );
+}
+
+// ===== components/forms/Input.jsx =====
+/**
+ * Hearth Studio — Input (Core)
+ * Labelled text field with hint / error. Theme focus ring; density-driven height.
+ */
+function Input({
+  label = null,
+  hint = null,
+  error = null,
+  type = "text",
+  prefix = null,
+  full = true,
+  id,
+  style = {},
+  ...rest
+}) {
+  const [focus, setFocus] = React.useState(false);
+  const reactId = React.useId ? React.useId() : "in";
+  const inputId = id || reactId;
+
+  return (
+    <div style={{ width: full ? "100%" : "auto", fontFamily: "var(--font-body)" }}>
+      {label ? (
+        <label htmlFor={inputId} style={{
+          display: "block", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)",
+          color: "var(--c-text)", marginBottom: "0.4rem", letterSpacing: "0.01em",
+        }}>{label}</label>
+      ) : null}
+
+      <div style={{
+        display: "flex", alignItems: "center", gap: "0.5rem",
+        height: "var(--control-h)", padding: "0 0.9rem",
+        background: "var(--c-surface)",
+        border: `1px solid ${error ? "var(--c-danger)" : focus ? "var(--c-ring)" : "var(--c-border-strong)"}`,
+        borderRadius: "var(--radius-control)",
+        boxShadow: focus && !error ? "0 0 0 3px color-mix(in oklab, var(--c-ring) 22%, transparent)" : "none",
+        transition: "border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out)",
+      }}>
+        {prefix ? <span style={{ color: "var(--c-text-subtle)", display: "inline-flex", fontSize: "0.95rem" }}>{prefix}</span> : null}
+        <input
+          id={inputId}
+          type={type}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          style={{
+            flex: 1, minWidth: 0, height: "100%", border: "none", outline: "none",
+            background: "transparent", fontFamily: "var(--font-body)", fontSize: "0.95rem",
+            color: "var(--c-text)", ...style,
+          }}
+          {...rest}
+        />
+      </div>
+
+      {error ? (
+        <div style={{ fontSize: "var(--text-sm)", color: "var(--c-danger)", marginTop: "0.4rem" }}>{error}</div>
+      ) : hint ? (
+        <div style={{ fontSize: "var(--text-sm)", color: "var(--c-text-subtle)", marginTop: "0.4rem" }}>{hint}</div>
+      ) : null}
+    </div>
+  );
+}
+
+// ===== components/hospitality/StatusBadge.jsx =====
+/**
+ * Hearth Studio — StatusBadge (Hospitality)
+ * Availability / lifecycle state across all three interaction modes:
+ * Reservation (訂位), Booking (訂房), Pre-order & Pickup (預訂取貨).
+ * Bilingual labels baked in; pass `label` to override.
+ */
+const STATUS = {
+  // ── Generic / Reservation (訂位) ──
+  available: { tone: "success", dot: true,  label: "可預約 Available" },
+  limited:   { tone: "warning", dot: true,  label: "僅剩少量 Limited" },
+  soldout:   { tone: "danger",  dot: false, label: "售完 Sold out" },
+  full:      { tone: "danger",  dot: false, label: "額滿 Fully booked" },
+  comingsoon:{ tone: "info",    dot: false, label: "即將開放 Coming soon" },
+  confirmed: { tone: "success", dot: true,  label: "已確認 Confirmed" },
+  cancelled: { tone: "danger",  dot: false, label: "已取消 Cancelled" },
+
+  // ── Booking (訂房) ──
+  bookable:  { tone: "success", dot: true,  label: "可訂房 Available" },
+  checkedin: { tone: "info",    dot: true,  label: "已入住 Checked in" },
+
+  // ── Pre-order & Pickup (預訂取貨) ──
+  accepting:    { tone: "success", dot: true,  label: "接受預訂中 Accepting orders" },
+  almostfull:   { tone: "warning", dot: true,  label: "名額將滿 Almost full" },
+  closed:       { tone: "neutral", dot: false, label: "預訂截止 Orders closed" },
+  making:       { tone: "info",    dot: true,  label: "製作中 In the oven" },
+  ready:        { tone: "success", dot: false, label: "可取貨 Ready for pickup" },
+  done:         { tone: "neutral", dot: false, label: "已完成 Completed" },
+  whilestockslast: { tone: "warning", dot: false, label: "售完即止 While stocks last" },
+};
+
+function StatusBadge({ status = "available", label, solid, style = {}, ...rest }) {
+  const s = STATUS[status] || STATUS.available;
+  const tones = {
+    neutral: ["var(--c-surface-2)", "var(--c-text-muted)", "var(--c-text-muted)"],
+    success: ["var(--c-success-bg)", "var(--c-success)", "var(--c-success)"],
+    warning: ["var(--c-warning-bg)", "var(--c-warning)", "var(--c-warning)"],
+    danger:  ["var(--c-danger-bg)",  "var(--c-danger)",  "var(--c-danger)"],
+    info:    ["var(--c-info-bg)",    "var(--c-info)",    "var(--c-info)"],
+  };
+  const [bg, fg, solidBg] = tones[s.tone];
+  const useSolid = solid ?? (status === "soldout" || status === "full");
+
+  return (
+    <span
+      style={{
+        display: "inline-flex", alignItems: "center", gap: "0.4rem",
+        padding: "0.25rem 0.65rem",
+        fontFamily: "var(--font-body)", fontSize: "var(--text-xs)", fontWeight: "var(--fw-semibold)",
+        letterSpacing: "0.04em", lineHeight: 1.5,
+        color: useSolid ? "#fff" : fg,
+        background: useSolid ? solidBg : bg,
+        borderRadius: "var(--radius-control)",
+        whiteSpace: "nowrap", ...style,
+      }}
+      {...rest}
+    >
+      {s.dot && !useSolid ? <span style={{ width: 6, height: 6, borderRadius: 999, background: "currentColor" }} /> : null}
+      {label ?? s.label}
+    </span>
+  );
+}
+
+// ===== components/hospitality/LanguageSwitcher.jsx =====
+/**
+ * Hearth Studio — LanguageSwitcher (Hospitality)
+ * Compact segmented control for site language. Controlled or uncontrolled.
+ */
+function LanguageSwitcher({
+  langs = [["zh", "中"], ["en", "EN"]],
+  value,
+  defaultValue,
+  onChange,
+  style = {},
+}) {
+  const [internal, setInternal] = React.useState(defaultValue ?? langs[0][0]);
+  const current = value ?? internal;
+  const pick = (code) => { if (value === undefined) setInternal(code); if (onChange) onChange(code); };
+
+  return (
+    <div
+      role="group"
+      aria-label="Language"
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 2, padding: 2,
+        border: "1px solid var(--c-border-strong)", borderRadius: "var(--radius-control)",
+        background: "var(--c-surface)", ...style,
+      }}
+    >
+      {langs.map(([code, label]) => {
+        const on = current === code;
+        return (
+          <button
+            key={code}
+            onClick={() => pick(code)}
+            aria-pressed={on}
+            style={{
+              border: "none", cursor: "pointer",
+              padding: "0.28rem 0.7rem",
+              fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)",
+              color: on ? "var(--c-on-primary)" : "var(--c-text-muted)",
+              background: on ? "var(--c-primary)" : "transparent",
+              borderRadius: "calc(var(--radius-control) - 1px)",
+              transition: "background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out)",
+            }}
+          >{label}</button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ===== components/hospitality/Countdown.jsx =====
+/**
+ * Hearth Studio — Countdown (Hospitality)
+ * Counts down to a target time — limited bakes, event reservations.
+ * Shows D/H/M/S blocks; calls onComplete once when it reaches zero.
+ */
+function Countdown({
+  to,
+  labels = ["天", "時", "分", "秒"],
+  onComplete,
+  compact = false,
+  style = {},
+}) {
+  const target = React.useMemo(() => new Date(to).getTime(), [to]);
+  const calc = React.useCallback(() => Math.max(0, target - Date.now()), [target]);
+  const [ms, setMs] = React.useState(calc);
+  const fired = React.useRef(false);
+
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      const next = calc();
+      setMs(next);
+      if (next === 0 && !fired.current) { fired.current = true; onComplete && onComplete(); }
+    }, 1000);
+    return () => clearInterval(id);
+  }, [calc, onComplete]);
+
+  const s = Math.floor(ms / 1000);
+  const parts = [Math.floor(s / 86400), Math.floor((s % 86400) / 3600), Math.floor((s % 3600) / 60), s % 60];
+  const pad = (n) => String(n).padStart(2, "0");
+
+  return (
+    <div style={{ display: "inline-flex", alignItems: "flex-end", gap: compact ? "0.5rem" : "0.9rem", fontFamily: "var(--font-body)", ...style }}>
+      {parts.map((n, i) => (
+        <React.Fragment key={i}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: compact ? 28 : 44 }}>
+            <span style={{
+              fontFamily: "var(--font-heading)", fontWeight: "var(--fw-semibold)",
+              fontSize: compact ? "var(--text-h4)" : "var(--text-h2)", lineHeight: 1,
+              color: "var(--c-text)", fontVariantNumeric: "tabular-nums",
+            }}>{pad(n)}</span>
+            <span style={{ marginTop: "0.3rem", fontSize: "var(--text-xs)", letterSpacing: "0.12em", color: "var(--c-text-subtle)" }}>{labels[i]}</span>
+          </div>
+          {i < parts.length - 1 ? (
+            <span style={{ fontFamily: "var(--font-heading)", fontSize: compact ? "var(--text-h4)" : "var(--text-h3)", color: "var(--c-border-strong)", paddingBottom: compact ? 14 : 22 }}>:</span>
+          ) : null}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// ===== components/hospitality/DatePicker.jsx =====
+/**
+ * Hearth Studio — DatePicker (Hospitality)
+ * Single-month calendar for booking dates. Disables past days and any in
+ * `disabledDates`/`fullDates`. Theme-driven; square cells in artisanal themes.
+ */
+const WEEK_ZH = ["一", "二", "三", "四", "五", "六", "日"];
+
+function DatePicker({
+  value,
+  onChange,
+  month,                 // Date controlling the visible month
+  onMonthChange,
+  minDate = new Date(),
+  fullDates = [],        // ISO yyyy-mm-dd strings marked 額滿
+  disabledDates = [],
+  style = {},
+}) {
+  const [viewInternal, setViewInternal] = React.useState(() => startOfMonth(month || value || new Date()));
+  const view = month ? startOfMonth(month) : viewInternal;
+  const setView = (d) => { if (onMonthChange) onMonthChange(d); if (!month) setViewInternal(d); };
+
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const min = stripTime(minDate);
+  const selISO = value ? iso(stripTime(new Date(value))) : null;
+
+  const first = new Date(view.getFullYear(), view.getMonth(), 1);
+  const startPad = (first.getDay() + 6) % 7; // Monday-first
+  const daysIn = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < startPad; i++) cells.push(null);
+  for (let d = 1; d <= daysIn; d++) cells.push(new Date(view.getFullYear(), view.getMonth(), d));
+
+  const monthLabel = `${view.getFullYear()} 年 ${view.getMonth() + 1} 月`;
+  const navBtn = {
+    border: "1px solid var(--c-border-strong)", background: "var(--c-surface)",
+    width: 32, height: 32, cursor: "pointer", color: "var(--c-text)",
+    borderRadius: "var(--radius-control)", fontSize: "1rem", lineHeight: 1,
+  };
+
+  return (
+    <div style={{ fontFamily: "var(--font-body)", width: 300, ...style }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+        <button type="button" aria-label="Previous month" style={navBtn}
+          onClick={() => setView(new Date(view.getFullYear(), view.getMonth() - 1, 1))}>‹</button>
+        <span style={{ fontFamily: "var(--font-heading)", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h4)", color: "var(--c-text)", whiteSpace: "nowrap" }}>{monthLabel}</span>
+        <button type="button" aria-label="Next month" style={navBtn}
+          onClick={() => setView(new Date(view.getFullYear(), view.getMonth() + 1, 1))}>›</button>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 4 }}>
+        {WEEK_ZH.map((w) => (
+          <div key={w} style={{ textAlign: "center", fontSize: "var(--text-xs)", color: "var(--c-text-subtle)", padding: "2px 0" }}>{w}</div>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
+        {cells.map((d, i) => {
+          if (!d) return <div key={i} />;
+          const dISO = iso(d);
+          const isPast = stripTime(d) < min;
+          const isFull = fullDates.includes(dISO);
+          const isDisabled = isPast || isFull || disabledDates.includes(dISO);
+          const isSel = selISO === dISO;
+          return (
+            <button
+              key={i}
+              type="button"
+              disabled={isDisabled}
+              onClick={() => onChange && onChange(d)}
+              aria-pressed={isSel}
+              title={isFull ? "額滿 Fully booked" : undefined}
+              style={{
+                position: "relative",
+                aspectRatio: "1", border: "1px solid",
+                borderColor: isSel ? "var(--c-primary)" : "transparent",
+                background: isSel ? "var(--c-primary)" : "transparent",
+                color: isSel ? "var(--c-on-primary)" : isDisabled ? "var(--c-text-subtle)" : "var(--c-text)",
+                opacity: isPast ? 0.35 : 1,
+                cursor: isDisabled ? "not-allowed" : "pointer",
+                borderRadius: "var(--radius-control)",
+                fontFamily: "var(--font-body)", fontSize: "var(--text-sm)",
+                textDecoration: isFull ? "line-through" : "none",
+                transition: "background var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out)",
+              }}
+            >
+              {d.getDate()}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function startOfMonth(d) { const x = new Date(d); return new Date(x.getFullYear(), x.getMonth(), 1); }
+function stripTime(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+
+// ===== components/hospitality/ReservationForm.jsx =====
+/**
+ * Hearth Studio — ReservationForm (Hospitality)
+ * Full booking flow: date (calendar) · party size · time slot · notes.
+ * Shows a confirmed state on submit. Reads only semantic tokens.
+ */
+function ReservationForm({
+  times = ["12:00", "12:30", "18:00", "18:30", "19:00", "20:00"],
+  fullDates = [],
+  fullTimes = [],
+  maxParty = 8,
+  onSubmit,
+  style = {},
+}) {
+  const [date, setDate] = React.useState(null);
+  const [party, setParty] = React.useState(2);
+  const [time, setTime] = React.useState(null);
+  const [name, setName] = React.useState("");
+  const [notes, setNotes] = React.useState("");
+  const [done, setDone] = React.useState(null);
+
+  const fmt = (d) => d ? `${d.getMonth() + 1}/${d.getDate()}` : "—";
+  const canSubmit = date && time && name.trim();
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    const booking = { date, party, time, name: name.trim(), notes };
+    setDone(booking);
+    onSubmit && onSubmit(booking);
+  };
+
+  const stepBtn = {
+    width: 38, height: "var(--control-h)", border: "1px solid var(--c-border-strong)",
+    background: "var(--c-surface)", cursor: "pointer", fontSize: "1.15rem",
+    color: "var(--c-text-muted)", borderRadius: "var(--radius-control)",
+  };
+
+  if (done) {
+    return (
+      <div style={{ fontFamily: "var(--font-body)", display: "flex", flexDirection: "column", gap: "1rem", ...style }}>
+        <StatusBadge status="confirmed" />
+        <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h2)", margin: 0, color: "var(--c-text)" }}>
+          {done.name}，已為您保留座位
+        </h3>
+        <p style={{ margin: 0, color: "var(--c-text-muted)" }}>
+          {fmt(done.date)} · {done.time} · {done.party} 位。確認信將寄至您的信箱。
+        </p>
+        {done.notes ? <p style={{ margin: 0, color: "var(--c-text-subtle)", fontSize: "var(--text-sm)" }}>備註：{done.notes}</p> : null}
+        <div><Button variant="outline" size="sm" onClick={() => setDone(null)}>修改訂位</Button></div>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} style={{ fontFamily: "var(--font-body)", display: "grid", gridTemplateColumns: "auto 1fr", gap: "var(--space-6)", ...style }}>
+      {/* Calendar */}
+      <div>
+        <FieldLabel>選擇日期 · Date</FieldLabel>
+        <DatePicker value={date} onChange={setDate} fullDates={fullDates} />
+      </div>
+
+      {/* Right column */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-stack)", minWidth: 240 }}>
+        <div>
+          <FieldLabel>人數 · Party size</FieldLabel>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem" }}>
+            <button type="button" style={stepBtn} onClick={() => setParty(Math.max(1, party - 1))} aria-label="Fewer">−</button>
+            <span style={{ minWidth: 28, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)" }}>{party}</span>
+            <button type="button" style={stepBtn} onClick={() => setParty(Math.min(maxParty, party + 1))} aria-label="More">+</button>
+            <span style={{ fontSize: "var(--text-sm)", color: "var(--c-text-subtle)", marginLeft: "0.25rem" }}>最多 {maxParty} 位</span>
+          </div>
+        </div>
+
+        <div>
+          <FieldLabel>時段 · Time</FieldLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+            {times.map((t) => {
+              const isFull = fullTimes.includes(t);
+              const on = time === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  disabled={isFull}
+                  onClick={() => setTime(t)}
+                  style={{
+                    padding: "0.4rem 0.8rem", cursor: isFull ? "not-allowed" : "pointer",
+                    fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-medium)",
+                    color: on ? "var(--c-on-primary)" : isFull ? "var(--c-text-subtle)" : "var(--c-text)",
+                    background: on ? "var(--c-primary)" : "transparent",
+                    border: `1px solid ${on ? "var(--c-primary)" : "var(--c-border-strong)"}`,
+                    borderRadius: "var(--radius-control)",
+                    textDecoration: isFull ? "line-through" : "none",
+                    transition: "background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out)",
+                  }}
+                >{t}</button>
+              );
+            })}
+          </div>
+        </div>
+
+        <Input label="姓名 · Name" placeholder="王小明" value={name} onChange={(e) => setName(e.target.value)} />
+
+        <div>
+          <FieldLabel>需求備註 · Notes</FieldLabel>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            placeholder="高腳椅、過敏原、慶生…"
+            style={{
+              width: "100%", resize: "vertical", padding: "0.6rem 0.9rem",
+              fontFamily: "var(--font-body)", fontSize: "0.95rem", color: "var(--c-text)",
+              background: "var(--c-surface)", border: "1px solid var(--c-border-strong)",
+              borderRadius: "var(--radius-control)", outline: "none",
+            }}
+          />
+        </div>
+
+        <Button type="submit" variant="primary" full disabled={!canSubmit}>確認訂位 · Confirm</Button>
+      </div>
+    </form>
+  );
+}
+
+function FieldLabel({ children }) {
+  return (
+    <div style={{
+      fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)", color: "var(--c-text)",
+      marginBottom: "0.5rem", letterSpacing: "0.01em",
+    }}>{children}</div>
+  );
+}
+
+// ===== components/preorder/PickupSlotPicker.jsx =====
+/**
+ * Hearth Studio — PickupSlotPicker (Pre-order & Pickup)
+ * Time-RANGE slot selector for pickup windows (e.g. 09:00–11:00). Each slot
+ * may carry capacity state: available / almostfull / full. Theme-driven.
+ */
+function PickupSlotPicker({
+  slots = [
+    { range: "09:00–11:00", state: "available" },
+    { range: "11:00–13:00", state: "almostfull" },
+    { range: "14:00–16:00", state: "available" },
+    { range: "17:00–19:00", state: "full" },
+  ],
+  value,
+  onChange,
+  columns = 2,
+  style = {},
+}) {
+  const stateMeta = {
+    available:  { note: "可預訂", color: "var(--c-success)" },
+    almostfull: { note: "名額將滿", color: "var(--c-warning)" },
+    full:       { note: "已額滿", color: "var(--c-text-subtle)" },
+  };
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: "0.6rem", ...style }}>
+      {slots.map((s) => {
+        const isFull = s.state === "full";
+        const on = value === s.range;
+        const meta = stateMeta[s.state] || stateMeta.available;
+        return (
+          <button
+            key={s.range}
+            type="button"
+            disabled={isFull}
+            onClick={() => onChange && onChange(s.range)}
+            aria-pressed={on}
+            style={{
+              display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "0.2rem",
+              padding: "0.6rem 0.85rem", textAlign: "left", cursor: isFull ? "not-allowed" : "pointer",
+              fontFamily: "var(--font-body)",
+              color: on ? "var(--c-on-primary)" : isFull ? "var(--c-text-subtle)" : "var(--c-text)",
+              background: on ? "var(--c-primary)" : "transparent",
+              border: `1px solid ${on ? "var(--c-primary)" : "var(--c-border-strong)"}`,
+              borderRadius: "var(--radius-control)",
+              opacity: isFull ? 0.6 : 1,
+              transition: "background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out)",
+            }}
+          >
+            <span style={{ fontSize: "0.95rem", fontWeight: "var(--fw-semibold)", fontVariantNumeric: "tabular-nums", textDecoration: isFull ? "line-through" : "none" }}>{s.range}</span>
+            <span style={{ fontSize: "var(--text-xs)", color: on ? "color-mix(in oklab, var(--c-on-primary) 80%, transparent)" : meta.color }}>
+              {meta.note}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ===== components/preorder/DropCard.jsx =====
+/**
+ * Hearth Studio — DropCard 「下次出爐」公告卡 (Pre-order & Pickup)
+ * Announces the next bake/drop: date, planned items, when ordering opens,
+ * and a live countdown to the order cutoff. For shops that run on 檔期 (drops)
+ * rather than a fixed menu.
+ */
+function DropCard({
+  title = "下次出爐",
+  dropDate,                 // display string, e.g. "6 / 21（六）"
+  items = [],               // planned items: string[] or {name, note}[]
+  openText,                 // e.g. "6/18 20:00 開放預訂"
+  cutoff,                   // datetime → countdown to order cutoff
+  status = "accepting",     // accepting | closed | comingsoon
+  onOrder,
+  style = {},
+}) {
+  const closed = status === "closed";
+  return (
+    <div style={{
+      background: "var(--c-surface)", border: "1px solid var(--c-border)",
+      borderRadius: "var(--radius-card)", padding: "var(--pad-card)",
+      display: "flex", flexDirection: "column", gap: "var(--space-4)", ...style,
+    }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+        <div>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+            letterSpacing: "var(--tracking-wider)", textTransform: "uppercase", color: "var(--c-accent)" }}>{title} · Next drop</div>
+          <div style={{ fontFamily: "var(--font-heading)", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h2)",
+            color: "var(--c-text)", marginTop: "0.35rem", lineHeight: 1.05 }}>{dropDate}</div>
+        </div>
+        <StatusBadge status={status} />
+      </div>
+
+      {items.length ? (
+        <div>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)", marginBottom: "0.5rem" }}>預計品項 · On the bench</div>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+            {items.map((it, i) => {
+              const name = typeof it === "string" ? it : it.name;
+              const note = typeof it === "string" ? null : it.note;
+              return (
+                <li key={i} style={{ display: "flex", alignItems: "baseline", gap: "0.6rem", fontFamily: "var(--font-body)" }}>
+                  <span style={{ width: 5, height: 5, borderRadius: 999, background: "var(--c-accent)", flexShrink: 0, transform: "translateY(-2px)" }} />
+                  <span style={{ fontSize: "0.95rem", color: "var(--c-text)", fontWeight: "var(--fw-medium)" }}>{name}</span>
+                  {note ? <span style={{ fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{note}</span> : null}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
+
+      {cutoff && !closed ? (
+        <div style={{ borderTop: "1px solid var(--c-border)", paddingTop: "var(--space-4)" }}>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-muted)", marginBottom: "0.5rem" }}>距離預訂截止還有</div>
+          <Countdown to={cutoff} compact />
+        </div>
+      ) : null}
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", marginTop: "auto" }}>
+        <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{openText}</span>
+        <Button variant={closed ? "outline" : "primary"} size="sm" disabled={closed} onClick={onOrder}>
+          {closed ? "預訂已截止" : "線上預訂"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ===== components/preorder/TodayBoard.jsx =====
+/**
+ * Hearth Studio — TodayBoard 「今日現場供應」公告卡 (Pre-order & Pickup)
+ * Live list of what's available at the counter RIGHT NOW (walk-in, no order).
+ * Each item shows price + a live availability state. Carries an "as of" time.
+ */
+function TodayBoard({
+  title = "今日現場供應",
+  asOf,                  // e.g. "11:20 更新"
+  items = [],            // { name, note, price, state }
+  style = {},
+}) {
+  return (
+    <div style={{
+      background: "var(--c-surface)", border: "1px solid var(--c-border)",
+      borderRadius: "var(--radius-card)", overflow: "hidden", ...style,
+    }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between",
+        padding: "var(--pad-card)", paddingBottom: "var(--space-3)" }}>
+        <div>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+            letterSpacing: "var(--tracking-wider)", textTransform: "uppercase", color: "var(--c-accent)" }}>{title}</div>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)", marginTop: "0.3rem" }}>
+            現場購買 · walk-in &nbsp;·&nbsp; {asOf}
+          </div>
+        </div>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", fontFamily: "var(--font-body)", fontSize: "var(--text-xs)", color: "var(--c-success)" }}>
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: "var(--c-success)" }} />即時
+        </span>
+      </div>
+
+      <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        {items.map((it, i) => {
+          const out = it.state === "soldout";
+          return (
+            <li key={i} style={{
+              display: "flex", alignItems: "center", gap: "0.9rem",
+              padding: "0.8rem var(--pad-card)",
+              borderTop: "1px solid var(--c-border)",
+              opacity: out ? 0.55 : 1,
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: "var(--font-body)", fontSize: "0.98rem", fontWeight: "var(--fw-semibold)",
+                  color: "var(--c-text)", textDecoration: out ? "line-through" : "none" }}>{it.name}</div>
+                {it.note ? <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{it.note}</div> : null}
+              </div>
+              <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h4)", color: "var(--c-accent)" }}>{it.price}</span>
+              <StatusBadge status={it.state || "available"} />
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+// ===== components/preorder/PreorderForm.jsx =====
+/**
+ * Hearth Studio — PreorderForm 預訂取貨流程 (Pre-order & Pickup)
+ * The full flow for drop-based / takeaway / artisan shops:
+ *   檔期 drop → 品項 + 數量 → 取貨日期 → 取貨時段 → 取貨方式 → confirm.
+ * No dine-in. Confirms into a 製作中 (in-the-oven) state.
+ */
+function PreorderForm({
+  drops = [
+    { id: "w26", label: "本週檔期", sub: "6/21（六）出爐" },
+    { id: "w27", label: "下週檔期", sub: "6/28（六）出爐" },
+  ],
+  items = [
+    { id: "croissant", name: "深夜可頌", price: 95, note: "27 層奶油" },
+    { id: "rye",       name: "裸麥酸種", price: 180, note: "天然酵母" },
+    { id: "cinnamon",  name: "焦糖肉桂卷", price: 110, note: "現烤淋醬" },
+  ],
+  pickupSlots,
+  pickupMethods = [
+    { id: "self", label: "自取", note: "門市取貨" },
+    { id: "delivery", label: "宅配", note: "冷藏宅配，隔日到" },
+    { id: "platform", label: "外送平台", note: "Uber / foodpanda" },
+  ],
+  fullDates = [],
+  onSubmit,
+  style = {},
+}) {
+  const [drop, setDrop] = React.useState(drops[0]?.id);
+  const [qty, setQty] = React.useState({});
+  const [date, setDate] = React.useState(null);
+  const [slot, setSlot] = React.useState(null);
+  const [method, setMethod] = React.useState(pickupMethods[0]?.id);
+  const [name, setName] = React.useState("");
+  const [done, setDone] = React.useState(null);
+
+  const setItemQty = (id, d) => setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
+  const lines = items.filter((it) => (qty[it.id] || 0) > 0);
+  const count = lines.reduce((n, it) => n + qty[it.id], 0);
+  const total = lines.reduce((s, it) => s + qty[it.id] * it.price, 0);
+  const selfPickup = method === "self";
+  const canSubmit = count > 0 && name.trim() && (!selfPickup || (date && slot));
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    const order = { drop, lines: lines.map((it) => ({ ...it, qty: qty[it.id] })), count, total, date, slot, method, name: name.trim() };
+    setDone(order);
+    onSubmit && onSubmit(order);
+  };
+
+  const stepBtn = {
+    width: 32, height: 32, border: "1px solid var(--c-border-strong)", background: "var(--c-surface)",
+    cursor: "pointer", fontSize: "1.05rem", color: "var(--c-text-muted)", borderRadius: "var(--radius-control)",
+  };
+
+  if (done) {
+    const methodLabel = pickupMethods.find((m) => m.id === done.method)?.label;
+    return (
+      <div style={{ fontFamily: "var(--font-body)", display: "flex", flexDirection: "column", gap: "1rem", ...style }}>
+        <StatusBadge status="making" />
+        <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h2)", margin: 0, color: "var(--c-text)" }}>
+          {done.name}，預訂已收到
+        </h3>
+        <p style={{ margin: 0, color: "var(--c-text-muted)" }}>
+          {done.count} 件 · NT${done.total} · {methodLabel}
+          {done.method === "self" && done.date ? ` · ${done.date.getMonth() + 1}/${done.date.getDate()} ${done.slot} 取貨` : ""}
+        </p>
+        <p style={{ margin: 0, color: "var(--c-text-subtle)", fontSize: "var(--text-sm)" }}>
+          出爐前一天會以簡訊提醒。可取貨時將通知您。
+        </p>
+        <div><Button variant="outline" size="sm" onClick={() => setDone(null)}>修改預訂</Button></div>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} style={{ fontFamily: "var(--font-body)", display: "flex", flexDirection: "column", gap: "var(--space-6)", ...style }}>
+      {/* 1 · 檔期 */}
+      <Section step="1" label="選擇檔期 · Choose a drop">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
+          {drops.map((d) => {
+            const on = drop === d.id;
+            return (
+              <button key={d.id} type="button" onClick={() => setDrop(d.id)} aria-pressed={on}
+                style={{
+                  textAlign: "left", padding: "0.6rem 0.9rem", cursor: "pointer", fontFamily: "var(--font-body)",
+                  color: on ? "var(--c-on-primary)" : "var(--c-text)",
+                  background: on ? "var(--c-primary)" : "transparent",
+                  border: `1px solid ${on ? "var(--c-primary)" : "var(--c-border-strong)"}`, borderRadius: "var(--radius-control)",
+                }}>
+                <div style={{ fontSize: "0.95rem", fontWeight: "var(--fw-semibold)" }}>{d.label}</div>
+                <div style={{ fontSize: "var(--text-xs)", opacity: 0.8 }}>{d.sub}</div>
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* 2 · 品項 + 數量 */}
+      <Section step="2" label="品項與數量 · Items">
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          {items.map((it) => (
+            <div key={it.id} style={{ display: "flex", alignItems: "center", gap: "0.9rem", padding: "0.55rem 0", borderBottom: "1px solid var(--c-border)" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: "0.98rem", fontWeight: "var(--fw-semibold)", color: "var(--c-text)" }}>{it.name}</div>
+                <div style={{ fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{it.note} · NT${it.price}</div>
+              </div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
+                <button type="button" style={stepBtn} onClick={() => setItemQty(it.id, -1)} aria-label="−">−</button>
+                <span style={{ minWidth: 22, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)" }}>{qty[it.id] || 0}</span>
+                <button type="button" style={stepBtn} onClick={() => setItemQty(it.id, +1)} aria-label="+">+</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* 3 · 取貨方式 */}
+      <Section step="3" label="取貨方式 · Pickup">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.6rem" }}>
+          {pickupMethods.map((m) => {
+            const on = method === m.id;
+            return (
+              <button key={m.id} type="button" onClick={() => setMethod(m.id)} aria-pressed={on}
+                style={{
+                  textAlign: "left", padding: "0.6rem 0.85rem", cursor: "pointer", fontFamily: "var(--font-body)",
+                  color: on ? "var(--c-on-primary)" : "var(--c-text)", background: on ? "var(--c-primary)" : "transparent",
+                  border: `1px solid ${on ? "var(--c-primary)" : "var(--c-border-strong)"}`, borderRadius: "var(--radius-control)",
+                }}>
+                <div style={{ fontSize: "0.95rem", fontWeight: "var(--fw-semibold)" }}>{m.label}</div>
+                <div style={{ fontSize: "var(--text-xs)", opacity: 0.8 }}>{m.note}</div>
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
+      {/* 4 · 取貨日期 + 時段 (self-pickup only) */}
+      {selfPickup ? (
+        <Section step="4" label="取貨日期與時段 · Date & time">
+          <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap", alignItems: "flex-start" }}>
+            <DatePicker value={date} onChange={setDate} fullDates={fullDates} />
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <PickupSlotPicker value={slot} onChange={setSlot} slots={pickupSlots} />
+            </div>
+          </div>
+        </Section>
+      ) : null}
+
+      {/* 5 · 聯絡 + 送出 */}
+      <Section step={selfPickup ? "5" : "4"} label="聯絡資訊 · Contact">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-stack)", maxWidth: 360 }}>
+          <Input label="姓名 · Name" placeholder="王小明" value={name} onChange={(e) => setName(e.target.value)} />
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0.5rem 0", borderTop: "1px solid var(--c-border)" }}>
+            <span style={{ color: "var(--c-text-muted)" }}>{count} 件合計</span>
+            <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h3)", color: "var(--c-accent)" }}>NT${total}</span>
+          </div>
+          <Button type="submit" variant="primary" full disabled={!canSubmit}>送出預訂 · Place pre-order</Button>
+          <p style={{ margin: 0, fontSize: "var(--text-xs)", color: "var(--c-text-subtle)", textAlign: "center" }}>售完即止 · 預訂截止後不再追加</p>
+        </div>
+      </Section>
+    </form>
+  );
+}
+
+function Section({ step, label, children }) {
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.75rem" }}>
+        <span style={{
+          width: 22, height: 22, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center",
+          fontFamily: "var(--font-body)", fontSize: "var(--text-xs)", fontWeight: "var(--fw-bold)",
+          color: "var(--c-on-primary)", background: "var(--c-primary)", borderRadius: "var(--radius-control)",
+        }}>{step}</span>
+        <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)", color: "var(--c-text)", letterSpacing: "0.01em", whiteSpace: "nowrap" }}>{label}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ===== components/booking/DateRangePicker.jsx =====
+/**
+ * Hearth Studio — DateRangePicker (Booking)
+ * Two-step range calendar for 入住/退房 (check-in → check-out). First click sets
+ * check-in, second sets check-out; clicking again restarts. Highlights the span,
+ * disables past days and any in fullDates. Monday-first. Theme-driven.
+ */
+const WEEK_ZH_R = ["一", "二", "三", "四", "五", "六", "日"];
+
+function DateRangePicker({
+  value = {},                  // { start: Date|null, end: Date|null }
+  onChange,
+  minDate = new Date(),
+  fullDates = [],
+  months = 1,
+  style = {},
+}) {
+  const [viewBase, setViewBase] = React.useState(() => somR(value.start || new Date()));
+  const start = value.start ? stR(new Date(value.start)) : null;
+  const end = value.end ? stR(new Date(value.end)) : null;
+  const min = stR(minDate);
+  const iso = (d) => d.toISOString().slice(0, 10);
+
+  const pick = (d) => {
+    const day = stR(d);
+    if (!start || (start && end)) { onChange && onChange({ start: day, end: null }); return; }
+    if (day <= start) { onChange && onChange({ start: day, end: null }); return; }
+    onChange && onChange({ start, end: day });
+  };
+
+  const navBtn = {
+    border: "1px solid var(--c-border-strong)", background: "var(--c-surface)",
+    width: 32, height: 32, cursor: "pointer", color: "var(--c-text)",
+    borderRadius: "var(--radius-control)", fontSize: "1rem", lineHeight: 1,
+  };
+
+  const renderMonth = (offset) => {
+    const view = new Date(viewBase.getFullYear(), viewBase.getMonth() + offset, 1);
+    const startPad = (view.getDay() + 6) % 7;
+    const daysIn = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < startPad; i++) cells.push(null);
+    for (let d = 1; d <= daysIn; d++) cells.push(new Date(view.getFullYear(), view.getMonth(), d));
+    return (
+      <div key={offset} style={{ width: 280 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+          {offset === 0
+            ? <button type="button" aria-label="Previous" style={navBtn} onClick={() => setViewBase(new Date(viewBase.getFullYear(), viewBase.getMonth() - 1, 1))}>‹</button>
+            : <span style={{ width: 32 }} />}
+          <span style={{ fontFamily: "var(--font-heading)", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h4)", color: "var(--c-text)", whiteSpace: "nowrap" }}>
+            {view.getFullYear()} 年 {view.getMonth() + 1} 月
+          </span>
+          {offset === months - 1
+            ? <button type="button" aria-label="Next" style={navBtn} onClick={() => setViewBase(new Date(viewBase.getFullYear(), viewBase.getMonth() + 1, 1))}>›</button>
+            : <span style={{ width: 32 }} />}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 4 }}>
+          {WEEK_ZH_R.map((w) => <div key={w} style={{ textAlign: "center", fontSize: "var(--text-xs)", color: "var(--c-text-subtle)" }}>{w}</div>)}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
+          {cells.map((d, i) => {
+            if (!d) return <div key={i} />;
+            const day = stR(d);
+            const isPast = day < min;
+            const isFull = fullDates.includes(iso(day));
+            const disabled = isPast || isFull;
+            const isStart = start && +day === +start;
+            const isEnd = end && +day === +end;
+            const inRange = start && end && day > start && day < end;
+            const edge = isStart || isEnd;
+            return (
+              <button key={i} type="button" disabled={disabled} onClick={() => pick(d)}
+                style={{
+                  aspectRatio: "1", border: "1px solid",
+                  borderColor: edge ? "var(--c-primary)" : "transparent",
+                  background: edge ? "var(--c-primary)" : inRange ? "var(--c-surface-2)" : "transparent",
+                  color: edge ? "var(--c-on-primary)" : disabled ? "var(--c-text-subtle)" : "var(--c-text)",
+                  opacity: isPast ? 0.35 : 1, cursor: disabled ? "not-allowed" : "pointer",
+                  borderRadius: "var(--radius-control)", fontFamily: "var(--font-body)", fontSize: "var(--text-sm)",
+                  textDecoration: isFull ? "line-through" : "none",
+                  transition: "background var(--dur-1) var(--ease-out)",
+                }}>
+                {d.getDate()}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ fontFamily: "var(--font-body)", display: "flex", gap: "var(--space-6)", ...style }}>
+      {Array.from({ length: months }, (_, i) => renderMonth(i))}
+    </div>
+  );
+}
+
+function somR(d) { const x = new Date(d); return new Date(x.getFullYear(), x.getMonth(), 1); }
+function stR(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+
+// ===== components/booking/BookingForm.jsx =====
+/**
+ * Hearth Studio — BookingForm 訂房流程 (Booking)
+ * Hotel / B&B booking: 入住日–退房日 (date range) · 房型 · 人數 · contact.
+ * Computes nights and total. Confirms into a 已確認 state.
+ * (Variant skeleton — wire room availability + pricing per property.)
+ */
+function BookingForm({
+  rooms = [
+    { id: "std",   name: "標準雙人房", note: "1 大床 · 25㎡", price: 4200, status: "bookable" },
+    { id: "dlx",   name: "豪華景觀房", note: "1 大床 · 32㎡ · 城景", price: 5800, status: "bookable" },
+    { id: "suite", name: "閣樓套房",   note: "1 大床 + 客廳 · 48㎡", price: 8800, status: "soldout" },
+  ],
+  fullDates = [],
+  maxGuests = 4,
+  onSubmit,
+  style = {},
+}) {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  const [room, setRoom] = React.useState(rooms.find((r) => r.status !== "soldout")?.id);
+  const [guests, setGuests] = React.useState(2);
+  const [name, setName] = React.useState("");
+  const [done, setDone] = React.useState(null);
+
+  const nights = range.start && range.end ? Math.round((range.end - range.start) / 86400000) : 0;
+  const roomObj = rooms.find((r) => r.id === room);
+  const total = roomObj && nights ? roomObj.price * nights : 0;
+  const fmt = (d) => d ? `${d.getMonth() + 1}/${d.getDate()}` : "—";
+  const canSubmit = nights > 0 && room && name.trim();
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    const booking = { range, nights, room: roomObj, guests, name: name.trim(), total };
+    setDone(booking);
+    onSubmit && onSubmit(booking);
+  };
+
+  const stepBtn = {
+    width: 36, height: "var(--control-h)", border: "1px solid var(--c-border-strong)", background: "var(--c-surface)",
+    cursor: "pointer", fontSize: "1.1rem", color: "var(--c-text-muted)", borderRadius: "var(--radius-control)",
+  };
+
+  if (done) {
+    return (
+      <div style={{ fontFamily: "var(--font-body)", display: "flex", flexDirection: "column", gap: "1rem", ...style }}>
+        <StatusBadge status="confirmed" />
+        <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h2)", margin: 0, color: "var(--c-text)" }}>
+          {done.name}，訂房已確認
+        </h3>
+        <p style={{ margin: 0, color: "var(--c-text-muted)" }}>
+          {done.room.name} · {fmt(done.range.start)}–{fmt(done.range.end)} · {done.nights} 晚 · {done.guests} 位 · NT${done.total}
+        </p>
+        <div><Button variant="outline" size="sm" onClick={() => setDone(null)}>修改訂房</Button></div>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} style={{ fontFamily: "var(--font-body)", display: "flex", flexDirection: "column", gap: "var(--space-6)", ...style }}>
+      <div>
+        <Label>入住 — 退房 · Stay dates</Label>
+        <DateRangePicker value={range} onChange={setRange} fullDates={fullDates} months={1} />
+        {nights ? <div style={{ marginTop: "0.6rem", fontSize: "var(--text-sm)", color: "var(--c-text-muted)" }}>{fmt(range.start)} → {fmt(range.end)} · 共 {nights} 晚</div> : null}
+      </div>
+
+      <div>
+        <Label>房型 · Room type</Label>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          {rooms.map((r) => {
+            const out = r.status === "soldout";
+            const on = room === r.id;
+            return (
+              <button key={r.id} type="button" disabled={out} onClick={() => setRoom(r.id)} aria-pressed={on}
+                style={{
+                  display: "flex", alignItems: "center", gap: "0.9rem", textAlign: "left",
+                  padding: "0.7rem 0.9rem", cursor: out ? "not-allowed" : "pointer", fontFamily: "var(--font-body)",
+                  background: on ? "var(--c-surface-2)" : "transparent", opacity: out ? 0.6 : 1,
+                  border: `1px solid ${on ? "var(--c-primary)" : "var(--c-border-strong)"}`, borderRadius: "var(--radius-control)",
+                }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: "0.98rem", fontWeight: "var(--fw-semibold)", color: "var(--c-text)" }}>{r.name}</div>
+                  <div style={{ fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{r.note}</div>
+                </div>
+                <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h4)", color: "var(--c-accent)" }}>NT${r.price}</span>
+                <StatusBadge status={out ? "soldout" : "bookable"} />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: "var(--space-6)", flexWrap: "wrap", alignItems: "flex-end" }}>
+        <div>
+          <Label>人數 · Guests</Label>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.6rem" }}>
+            <button type="button" style={stepBtn} onClick={() => setGuests(Math.max(1, guests - 1))} aria-label="−">−</button>
+            <span style={{ minWidth: 26, textAlign: "center", fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)" }}>{guests}</span>
+            <button type="button" style={stepBtn} onClick={() => setGuests(Math.min(maxGuests, guests + 1))} aria-label="+">+</button>
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 200 }}><Input label="姓名 · Name" placeholder="王小明" value={name} onChange={(e) => setName(e.target.value)} /></div>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+        <div style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)" }}>
+          {nights ? <>合計 <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: "var(--fw-semibold)", fontSize: "var(--text-h3)", color: "var(--c-accent)" }}>NT${total}</span> · {nights} 晚</> : "請選擇入住日期"}
+        </div>
+        <Button type="submit" variant="primary" disabled={!canSubmit}>確認訂房 · Confirm booking</Button>
+      </div>
+    </form>
+  );
+}
+
+function Label({ children }) {
+  return <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)", color: "var(--c-text)", marginBottom: "0.6rem" }}>{children}</div>;
+}
+
+// ===== components/media/Gallery.jsx =====
+/**
+ * Hearth Studio — Gallery (Media)
+ * Large main image with a thumbnail strip. Click/keyboard to switch.
+ * Images adopt the theme photo tone. Accepts URLs or custom nodes.
+ */
+function Gallery({
+  images = [],            // [{ src?, node?, label?, alt? }]
+  ratio = "4 / 3",
+  thumbs = true,
+  start = 0,
+  style = {},
+}) {
+  const [i, setI] = React.useState(start);
+  const cur = images[i] || {};
+  const renderMedia = (img, main) => img.node
+    ? img.node
+    : img.src
+      ? <img src={img.src} alt={img.alt || ""} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "var(--photo-filter)" }} />
+      : <Placeholder label={img.label} main={main} />;
+
+  return (
+    <div style={{ ...style }}>
+      <div style={{ position: "relative", aspectRatio: ratio, overflow: "hidden", background: "var(--photo-bg)", borderRadius: "var(--radius-card)" }}>
+        {renderMedia(cur, true)}
+        {images.length > 1 ? (
+          <div style={{ position: "absolute", bottom: 10, right: 12, display: "flex", gap: 5 }}>
+            {images.map((_, n) => (
+              <span key={n} style={{ width: 6, height: 6, borderRadius: 999, background: n === i ? "var(--c-on-accent)" : "color-mix(in oklab, var(--c-on-accent) 45%, transparent)" }} />
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      {thumbs && images.length > 1 ? (
+        <div style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-3)", flexWrap: "wrap" }}>
+          {images.map((img, n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setI(n)}
+              aria-label={`View image ${n + 1}`}
+              aria-pressed={n === i}
+              style={{
+                width: 72, height: 56, padding: 0, overflow: "hidden", cursor: "pointer",
+                background: "var(--photo-bg)", borderRadius: "var(--radius-control)",
+                border: `2px solid ${n === i ? "var(--c-accent)" : "transparent"}`,
+                opacity: n === i ? 1 : 0.7, transition: "opacity var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out)",
+              }}
+            >
+              {renderMedia(img, false)}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Placeholder({ label, main }) {
+  return (
+    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", filter: "var(--photo-filter)" }}>
+      {main && label ? (
+        <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: "var(--text-h4)", color: "rgba(255,255,255,.85)" }}>{label}</span>
+      ) : null}
+    </div>
+  );
+}
+
+// ===== components/media/MapEmbed.jsx =====
+/**
+ * Hearth Studio — MapEmbed (Media)
+ * A framed location block: a stylised placeholder map with a pin, an address
+ * overlay card, and a link out to Google Maps. Swap `embedSrc` for a real
+ * <iframe> map in production. Theme-driven.
+ */
+function MapEmbed({
+  address = "",
+  addressEn = "",
+  note = "",
+  mapsUrl = "#",
+  embedSrc = null,
+  height = 360,
+  style = {},
+}) {
+  return (
+    <div style={{ position: "relative", height, overflow: "hidden", borderRadius: "var(--radius-card)", border: "1px solid var(--c-border)", background: "var(--c-surface-2)", ...style }}>
+      {embedSrc ? (
+        <iframe title="map" src={embedSrc} style={{ width: "100%", height: "100%", border: 0, filter: "var(--photo-filter)" }} loading="lazy" />
+      ) : (
+        <PlaceholderMap />
+      )}
+
+      {/* address card */}
+      <div style={{
+        position: "absolute", left: "var(--space-5)", bottom: "var(--space-5)", maxWidth: 320,
+        background: "var(--c-surface)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)",
+        padding: "var(--space-4)", boxShadow: "var(--shadow-md)",
+      }}>
+        <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)", letterSpacing: "var(--tracking-eyebrow)", textTransform: "uppercase", color: "var(--c-accent)", marginBottom: 6 }}>
+          Find us · 來訪
+        </div>
+        <div style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)", letterSpacing: "var(--tracking-heading)" }}>{address}</div>
+        {addressEn ? <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)", marginTop: 2 }}>{addressEn}</div> : null}
+        {note ? <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-muted)", marginTop: 8 }}>{note}</div> : null}
+        <a href={mapsUrl} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)", color: "var(--c-accent)", textDecoration: "none" }}>
+          在 Google 地圖開啟 →
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function PlaceholderMap() {
+  // simple stylised map: soft blocks + a pin, all in theme tones
+  return (
+    <div style={{ position: "absolute", inset: 0, filter: "var(--photo-filter)" }}>
+      <svg width="100%" height="100%" preserveAspectRatio="xMidYMid slice" viewBox="0 0 600 360" aria-hidden="true">
+        <rect width="600" height="360" fill="var(--c-surface-2)" />
+        <g stroke="var(--c-border-strong)" strokeWidth="6" fill="none" opacity="0.7">
+          <path d="M-20 90 H620" /><path d="M-20 250 H620" />
+          <path d="M160 -20 V380" /><path d="M430 -20 V380" />
+          <path d="M-20 170 L260 170 L320 230 L620 230" strokeWidth="10" stroke="var(--c-accent)" opacity="0.5" />
+        </g>
+        <g fill="var(--c-border)" opacity="0.5">
+          <rect x="40" y="110" width="90" height="110" /><rect x="190" y="30" width="210" height="40" />
+          <rect x="460" y="110" width="110" height="110" /><rect x="190" y="270" width="210" height="70" />
+        </g>
+        {/* pin */}
+        <g transform="translate(300 175)">
+          <circle cx="0" cy="0" r="26" fill="var(--c-primary)" opacity="0.14" />
+          <path d="M0 -22 C12 -22 20 -13 20 -2 C20 12 0 26 0 26 C0 26 -20 12 -20 -2 C-20 -13 -12 -22 0 -22 Z" fill="var(--c-accent)" />
+          <circle cx="0" cy="-2" r="6" fill="var(--c-surface)" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+// ===== components/media/InstagramEmbed.jsx =====
+/**
+ * Hearth Studio — InstagramEmbed (Media)
+ * A branded IG feed block: handle header, a grid of post tiles (placeholder or
+ * real image URLs), and a follow CTA. For shops where IG is the main channel.
+ */
+function InstagramEmbed({
+  handle = "@studio",
+  caption = "",
+  posts = [],            // [{ src?, label?, alt? }] — 6–9 recommended
+  profileUrl = "#",
+  columns = 3,
+  style = {},
+}) {
+  return (
+    <div style={{ ...style }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", marginBottom: "var(--space-4)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <span style={{ width: 42, height: 42, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "var(--c-primary)", color: "var(--c-on-primary)", fontFamily: "var(--font-heading)", fontSize: "1.1rem" }}>
+            {handle.replace(/^@/, "").slice(0, 1).toUpperCase()}
+          </span>
+          <div>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "0.95rem", fontWeight: "var(--fw-semibold)", color: "var(--c-text)" }}>{handle}</div>
+            {caption ? <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>{caption}</div> : null}
+          </div>
+        </div>
+        <a href={profileUrl} target="_blank" rel="noreferrer" style={{
+          display: "inline-flex", alignItems: "center", gap: 6, padding: "0.45rem 1rem",
+          fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)",
+          color: "var(--c-on-primary)", background: "var(--c-primary)", borderRadius: "var(--radius-control)", textDecoration: "none",
+        }}>追蹤 · Follow</a>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: "var(--space-2)" }}>
+        {posts.map((p, n) => (
+          <a key={n} href={profileUrl} target="_blank" rel="noreferrer" style={{ position: "relative", aspectRatio: "1", overflow: "hidden", background: "var(--photo-bg)", display: "block" }}>
+            {p.src
+              ? <img src={p.src} alt={p.alt || ""} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "var(--photo-filter)" }} />
+              : <span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", filter: "var(--photo-filter)", fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: "var(--text-sm)", color: "rgba(255,255,255,.8)" }}>{p.label || ""}</span>}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ===== components/feedback/Skeleton.jsx =====
+/**
+ * Hearth Studio — Skeleton (Feedback)
+ * Loading placeholder with a slow, quiet shimmer (house motion = unhurried).
+ * Variants: line / block / circle. Compose several to mimic a card.
+ */
+function Skeleton({
+  variant = "line",
+  width,
+  height,
+  lines = 1,
+  style = {},
+}) {
+  const base = {
+    background: "linear-gradient(90deg, var(--c-surface-2) 25%, color-mix(in oklab, var(--c-surface-2) 55%, var(--c-surface)) 50%, var(--c-surface-2) 75%)",
+    backgroundSize: "200% 100%",
+    animation: "hearth-shimmer 1.6s var(--ease-soft) infinite",
+    borderRadius: "var(--radius-control)",
+  };
+
+  const Style = () => (
+    <style>{`@keyframes hearth-shimmer { from { background-position: 200% 0 } to { background-position: -200% 0 } }
+      @media (prefers-reduced-motion: reduce) { .hearth-sk { animation: none !important } }`}</style>
+  );
+
+  if (variant === "circle") {
+    const d = width || height || 44;
+    return <><Style /><div className="hearth-sk" style={{ ...base, width: d, height: d, borderRadius: "999px", ...style }} /></>;
+  }
+  if (variant === "block") {
+    return <><Style /><div className="hearth-sk" style={{ ...base, width: width || "100%", height: height || 160, borderRadius: "var(--radius-card)", ...style }} /></>;
+  }
+  // line(s)
+  return (
+    <>
+      <Style />
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem", ...style }}>
+        {Array.from({ length: lines }, (_, i) => (
+          <div key={i} className="hearth-sk" style={{ ...base, height: height || 13, width: width || (i === lines - 1 && lines > 1 ? "60%" : "100%") }} />
+        ))}
+      </div>
+    </>
+  );
+}
+
+/** Convenience: a card-shaped skeleton (cover + title + two lines). */
+function SkeletonCard({ style = {} }) {
+  return (
+    <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)", overflow: "hidden", ...style }}>
+      <Skeleton variant="block" height={150} style={{ borderRadius: 0 }} />
+      <div style={{ padding: "var(--pad-card)", display: "flex", flexDirection: "column", gap: "0.7rem" }}>
+        <Skeleton variant="line" height={20} width="70%" />
+        <Skeleton variant="line" lines={2} />
+      </div>
+    </div>
+  );
+}
+
+// ===== components/feedback/EmptyState.jsx =====
+/**
+ * Hearth Studio — EmptyState (Feedback)
+ * Quiet centered message for "nothing here yet" moments — no orders found, the
+ * gap between drops, an empty cart. Optional glyph and action.
+ */
+function EmptyState({
+  glyph = "○",
+  title = "",
+  message = "",
+  action = null,          // { label, onClick } or a node
+  style = {},
+}) {
+  return (
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      textAlign: "center", padding: "var(--space-8) var(--space-5)", gap: "var(--space-3)",
+      ...style,
+    }}>
+      <div style={{
+        width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center",
+        borderRadius: "var(--radius-card)", border: "1px solid var(--c-border)", background: "var(--c-surface)",
+        fontFamily: "var(--font-heading)", fontSize: "1.8rem", color: "var(--c-text-subtle)",
+      }}>{glyph}</div>
+      {title ? <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h3)", color: "var(--c-text)", margin: "var(--space-2) 0 0", letterSpacing: "var(--tracking-heading)" }}>{title}</h3> : null}
+      {message ? <p style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)", maxWidth: 380, margin: 0, lineHeight: "var(--leading-relaxed)" }}>{message}</p> : null}
+      {action ? (
+        <div style={{ marginTop: "var(--space-3)" }}>
+          {React.isValidElement(action) ? action : <Button variant="primary" size="sm" onClick={action.onClick}>{action.label}</Button>}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+Object.assign(window, { Button, Badge, Tag, Card, Modal, Input, StatusBadge, LanguageSwitcher, Countdown, DatePicker, ReservationForm, PickupSlotPicker, DropCard, TodayBoard, PreorderForm, DateRangePicker, BookingForm, Gallery, MapEmbed, InstagramEmbed, Skeleton, SkeletonCard, EmptyState });
+window.Hearth = { Button, Badge, Tag, Card, Modal, Input, StatusBadge, LanguageSwitcher, Countdown, DatePicker, ReservationForm, PickupSlotPicker, DropCard, TodayBoard, PreorderForm, DateRangePicker, BookingForm, Gallery, MapEmbed, InstagramEmbed, Skeleton, SkeletonCard, EmptyState };
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — shared site shell (nav + footer + photo helpers).
+   Used by every Atelier Ling page so navigation & footer stay consistent.
+   Exposed on window for the per-page scripts. */
+
+/* Documentary photo plate (placeholder — swap for real photography).
+   Picks up the theme --photo-bg + --photo-filter automatically. */
+function Plate({ label, tone, ratio = "4 / 3", style = {} }) {
+  const bg = tone || "var(--photo-bg)";
+  return (
+    <div style={{ position: "relative", aspectRatio: ratio, overflow: "hidden", background: bg, ...style }}>
+      <div style={{ position: "absolute", inset: 0, filter: "var(--photo-filter)",
+        background: "radial-gradient(120% 90% at 72% 14%, rgba(255,255,255,.10), transparent 55%)" }} />
+      <div style={{ position: "absolute", inset: 0,
+        backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='2'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E\")",
+        opacity: 0.10, mixBlendMode: "overlay" }} />
+      {label ? (
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: 8, color: "rgba(246,240,227,.82)" }}>
+          <span style={{ width: 26, height: 1, background: "currentColor", opacity: .6 }} />
+          <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: 17 }}>{label}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Eyebrow({ children, onDark }) {
+  return (
+    <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+      letterSpacing: "var(--tracking-eyebrow)", textTransform: "uppercase",
+      color: onDark ? "var(--c-secondary)" : "var(--c-accent)" }}>{children}</div>
+  );
+}
+
+/* Site navigation, shared across pages. `current` highlights the active item. */
+const AL_NAV = [
+  ["home", "首頁", "index.html"],
+  ["preorder", "下次出爐", "preorder.html"],
+  ["item", "品項", "item.html"],
+  ["about", "關於", "about.html"],
+  ["contact", "聯絡", "contact.html"],
+];
+
+function Header({ current = "home" }) {
+  const [lang, setLang] = React.useState("zh");
+  return (
+    <header style={{ position: "sticky", top: 0, zIndex: "var(--z-header)",
+      background: "color-mix(in oklab, var(--c-bg) 88%, transparent)", backdropFilter: "blur(10px)",
+      borderBottom: "1px solid var(--c-border)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "0 var(--gutter)", height: 72,
+        display: "flex", alignItems: "center", gap: 28 }}>
+        <a href="index.html" style={{ display: "flex", flexDirection: "column", lineHeight: 1, textDecoration: "none" }}>
+          <span style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: 23, letterSpacing: ".02em", color: "var(--c-text)" }}>Atelier&nbsp;Ling</span>
+          <span style={{ fontFamily: "var(--font-body)", fontSize: 10.5, letterSpacing: ".26em", textTransform: "uppercase", color: "var(--c-text-subtle)", marginTop: 3 }}>凌晨製作所</span>
+        </a>
+        <nav style={{ display: "flex", gap: 22, marginLeft: 20 }}>
+          {AL_NAV.map(([id, t, href]) => (
+            <a key={id} href={href} style={{ fontFamily: "var(--font-body)", fontSize: 14.5,
+              fontWeight: current === id ? 600 : 500,
+              color: current === id ? "var(--c-text)" : "var(--c-text-muted)",
+              textDecoration: "none", whiteSpace: "nowrap",
+              borderBottom: current === id ? "1.5px solid var(--c-accent)" : "1.5px solid transparent",
+              paddingBottom: 2 }}>{t}</a>
+          ))}
+        </nav>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16 }}>
+          <LanguageSwitcher value={lang} onChange={setLang} />
+          <Button variant="primary" size="sm" onClick={() => { if (window.AL_SPA) { window.location.hash = "preorder"; } else { window.location.href = "preorder.html"; } }}>
+            {lang === "zh" ? "預訂麵包" : "Pre-order"}
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* Shared footer, used on every page. */
+function SiteFooter() {
+  const cols = [
+    ["品項", [["本檔麵包", "preorder.html"], ["品項細節", "item.html"], ["禮盒", "#"], ["大量訂購", "contact.html"]]],
+    ["關於", [["品牌故事", "about.html"], ["聯絡我們", "contact.html"]]],
+    ["關注", [["Instagram 看公告", "contact.html"], ["LINE 開賣提醒", "#"]]],
+  ];
+  return (
+    <footer style={{ background: "var(--c-surface-2)", borderTop: "1px solid var(--c-border)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-7) var(--gutter) var(--space-5)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr 1fr 1fr", gap: "var(--space-6)" }}>
+          <div>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: 24, color: "var(--c-text)" }}>Atelier Ling</div>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: 10.5, letterSpacing: ".26em", textTransform: "uppercase", color: "var(--c-text-subtle)", marginTop: 4 }}>凌晨製作所</div>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 14, lineHeight: 1.6, color: "var(--c-text-muted)", maxWidth: 280, marginTop: 16 }}>
+              深夜開工的法式手作烘焙。只做外帶與預訂，售完即止。台北市大同區赤峰街 7 巷。
+            </p>
+          </div>
+          {cols.map(([h, items]) => (
+            <div key={h}>
+              <div style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--c-accent)", marginBottom: 14 }}>{h}</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {items.map(([t, href]) => <a key={t} href={href} style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--c-text-muted)", textDecoration: "none" }}>{t}</a>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: "1px solid var(--c-border)", marginTop: "var(--space-6)", paddingTop: "var(--space-4)", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+          <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--c-text-subtle)" }}>© 2026 Atelier Ling · 由 Hearth Studio 設計</span>
+          <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--c-text-subtle)" }}>有貨就開，做完就關，最新狀態看 IG</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+Object.assign(window, { Plate, Eyebrow, Header, SiteFooter });
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — homepage body.
+   Pre-order & Pickup model (no dine-in, no fixed menu — runs on 檔期 drops).
+   NOTE: Hero is intentionally unchanged. */
+
+function Hero() {
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter) var(--space-7)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: "var(--space-7)", alignItems: "center" }}>
+        <div>
+          <Eyebrow>每日 06:00 出爐 · Baked at dawn</Eyebrow>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 600,
+            fontSize: "calc(var(--text-display) * var(--font-heading-scale))", lineHeight: 1.0,
+            letterSpacing: "var(--tracking-tight)", color: "var(--c-text)", margin: "var(--space-4) 0 0" }}>
+            趁城市還在<br /><span style={{ fontStyle: "italic", color: "var(--c-accent)" }}>沉睡</span>時，<br />我們已開始揉麵。
+          </h1>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-lead)", lineHeight: 1.6,
+            color: "var(--c-text-muted)", maxWidth: 440, margin: "var(--space-5) 0 0" }}>
+            一間深夜開工的法式手作烘焙所。長時間低溫發酵，天未亮就出爐——只為趕上你的第一杯咖啡。
+          </p>
+          <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-6)", flexWrap: "wrap" }}>
+            <Button variant="primary" size="lg">預訂明早麵包</Button>
+            <Button variant="outline" size="lg">查看品項</Button>
+          </div>
+        </div>
+        <Plate label="Midnight bench, flour & steam" tone="#222B38" ratio="4 / 5" />
+      </div>
+    </section>
+  );
+}
+
+/* 檔期公告 — the heart of the Pre-order & Pickup model:
+   下次出爐 (DropCard) beside 今日現場供應 (TodayBoard). */
+function Announce() {
+  const cutoff = React.useMemo(() => {
+    const d = new Date(); d.setHours(22, 0, 0, 0);
+    if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1);
+    return d.getTime();
+  }, []);
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-7) var(--gutter)" }}>
+      <div style={{ marginBottom: "var(--space-6)" }}>
+        <Eyebrow>檔期公告 · This week's bench</Eyebrow>
+        <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h2)", color: "var(--c-text)", margin: "var(--space-3) 0 0" }}>
+          沒有固定菜單，<span style={{ fontStyle: "italic", color: "var(--c-accent)" }}>每檔</span>都不一樣
+        </h2>
+        <p style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)", maxWidth: 520, margin: "var(--space-3) 0 0" }}>
+          我們不定期公告下一檔要做什麼。看到喜歡的就線上預訂，或天亮後到店現場購買——售完即止。
+        </p>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-5)", alignItems: "start" }}>
+        <DropCard
+          dropDate="6 / 21（六）"
+          status="accepting"
+          items={[
+            { name: "深夜可頌", note: "27 層奶油" },
+            { name: "裸麥酸種", note: "天然酵母" },
+            { name: "焦糖肉桂卷", note: "現烤淋醬" },
+            { name: "鹽可頌", note: "限量 40 個" },
+          ]}
+          cutoff={cutoff}
+          openText="6/18 20:00 開放預訂"
+        />
+        <TodayBoard
+          asOf="11:20 更新"
+          items={[
+            { name: "深夜可頌", note: "奶油充足", price: "NT$95", state: "whilestockslast" },
+            { name: "裸麥酸種", note: "整條 / 半條", price: "NT$180", state: "available" },
+            { name: "鄉村法棍", price: "NT$120", state: "limited" },
+            { name: "焦糖肉桂卷", price: "NT$110", state: "soldout" },
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
+
+/* 線上預訂 — the full Pre-order & Pickup flow (replaces the old reservation). */
+function Preorder() {
+  const [toast, setToast] = React.useState(null);
+  const full = React.useMemo(() => {
+    const d = new Date(); d.setDate(d.getDate() + 4);
+    return [d.toISOString().slice(0, 10)];
+  }, []);
+  return (
+    <section style={{ background: "var(--c-primary)", color: "var(--c-on-primary)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter)" }}>
+        <div style={{ maxWidth: 560, marginBottom: "var(--space-6)" }}>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)", letterSpacing: "var(--tracking-wider)", textTransform: "uppercase", color: "var(--c-secondary)" }}>
+            線上預訂 · Pre-order &amp; pickup
+          </div>
+          <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontStyle: "italic", fontSize: "var(--text-h1)", color: "var(--c-on-primary)", margin: "var(--space-3) 0 var(--space-3)" }}>
+            選好品項，留爐給你
+          </h2>
+          <p style={{ fontFamily: "var(--font-body)", color: "color-mix(in oklab, var(--c-on-primary) 72%, transparent)", margin: 0 }}>
+            選擇檔期與品項，挑自取、宅配或外送平台。自取請選日期與時段——做完就關，售完即止。
+          </p>
+        </div>
+        <div style={{ background: "var(--c-surface)", color: "var(--c-text)", border: "1px solid var(--c-border)", padding: "var(--pad-card)" }}>
+          <PreorderForm
+            fullDates={full}
+            pickupSlots={[
+              { range: "07:00–09:00", state: "almostfull" },
+              { range: "09:00–11:00", state: "available" },
+              { range: "12:00–14:00", state: "available" },
+              { range: "17:00–19:00", state: "full" },
+            ]}
+            onSubmit={(o) => { setToast(`預訂已收到 · ${o.count} 件 · NT$${o.total}（製作中）`); setTimeout(() => setToast(null), 4200); }}
+          />
+        </div>
+      </div>
+      <div style={{ position: "fixed", left: "50%", bottom: toast ? 28 : -80, transform: "translateX(-50%)",
+        transition: "bottom var(--dur-3) var(--ease-out)", zIndex: "var(--z-toast)",
+        background: "var(--c-text)", color: "var(--c-bg)", padding: "12px 22px",
+        display: "flex", alignItems: "center", gap: 10, fontFamily: "var(--font-body)", fontSize: 14.5 }}>
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--c-success)" }} />{toast || ""}
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  const cols = [
+    ["品項", ["本檔麵包", "節慶限定", "禮盒", "大量訂購"]],
+    ["取貨", ["門市自取 · 赤峰街 7 巷", "冷藏宅配 · 隔日到", "外送平台 · Uber / panda"]],
+    ["關注", ["Instagram 看公告", "LINE 開賣提醒"]],
+  ];
+  return (
+    <footer style={{ background: "var(--c-surface-2)", borderTop: "1px solid var(--c-border)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-7) var(--gutter) var(--space-5)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr 1fr 1fr", gap: "var(--space-6)" }}>
+          <div>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: 24, color: "var(--c-text)" }}>Atelier Ling</div>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: 10.5, letterSpacing: ".26em", textTransform: "uppercase", color: "var(--c-text-subtle)", marginTop: 4 }}>凌晨製作所</div>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 14, lineHeight: 1.6, color: "var(--c-text-muted)", maxWidth: 280, marginTop: 16 }}>
+              深夜開工的法式手作烘焙。只做外帶與預訂，售完即止。台北市大同區赤峰街 7 巷。
+            </p>
+          </div>
+          {cols.map(([h, items]) => (
+            <div key={h}>
+              <div style={{ fontFamily: "var(--font-body)", fontSize: 12, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--c-accent)", marginBottom: 14 }}>{h}</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {items.map((it) => <a key={it} href="#" style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "var(--c-text-muted)", textDecoration: "none" }}>{it}</a>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop: "1px solid var(--c-border)", marginTop: "var(--space-6)", paddingTop: "var(--space-4)", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+          <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--c-text-subtle)" }}>© 2026 Atelier Ling · 由 Hearth Studio 設計</span>
+          <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--c-text-subtle)" }}>Mode: Pre-order &amp; Pickup · theme atelier-ling</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function Home() {
+  return (
+    <React.Fragment>
+      <Header current="home" />
+      <Hero />
+      <Announce />
+      <Preorder />
+      <SiteFooter />
+    </React.Fragment>
+  );
+}
+
+window.ALPAGES = window.ALPAGES || {};
+window.ALPAGES.home = Home;
+if (!window.AL_SPA) ReactDOM.createRoot(document.getElementById("root")).render(<Home />);
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — 下次出爐 / 預訂頁 (Pre-order & Pickup main page).
+   Page-local components prefixed PO* to stay out of the shared namespace. */
+
+const PO_DROP_CUTOFF = (() => { const d = new Date(); d.setHours(22, 0, 0, 0); d.setDate(d.getDate() + 1); return d.getTime(); })();
+
+const PO_ITEMS = [
+  { id: "croissant", name: "深夜可頌", en: "Croissant", price: 95, desc: "72 小時冷藏發酵，27 層奶油，外殼酥脆。", left: 18, tone: "#3A2A1C" },
+  { id: "rye",       name: "裸麥酸種", en: "Rye sourdough", price: 180, desc: "天然酵母，深烤外殼，微酸回甘。", left: 9, tone: "#2C2620" },
+  { id: "cinnamon",  name: "焦糖肉桂卷", en: "Cinnamon roll", price: 110, desc: "現烤淋焦糖醬，肉桂香氣飽滿。", left: 4, tone: "#33241A" },
+  { id: "saltbun",   name: "鹽可頌", en: "Salt butter roll", price: 70, desc: "海鹽與發酵奶油，外脆內軟。", left: 25, tone: "#2E2A22" },
+  { id: "baguette",  name: "鄉村法棍", en: "Campagne", price: 120, desc: "T65 麵粉，長棍裂口，麥香純粹。", left: 0, tone: "#322A20" },
+  { id: "tart",      name: "李子杏仁塔", en: "Plum tart", price: 220, desc: "糖煮李子與杏仁奶油，季節限定。", left: 6, tone: "#3A2630" },
+];
+
+function POHero() {
+  return (
+    <section style={{ background: "var(--c-primary)", color: "var(--c-on-primary)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter)",
+        display: "grid", gridTemplateColumns: "1fr auto", gap: "var(--space-7)", alignItems: "center" }}>
+        <div style={{ minWidth: 0 }}>
+          <Eyebrow onDark>下次出爐 · Next drop</Eyebrow>
+          <div style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h1)", lineHeight: 1.12,
+            letterSpacing: "var(--tracking-heading)", color: "var(--c-on-primary)", margin: "var(--space-4) 0 var(--space-3)" }}>
+            <div>6 / 15（六）</div>
+            <div style={{ fontStyle: "italic", color: "var(--c-secondary)" }}>06:00 出爐</div>
+          </div>
+          <p style={{ fontFamily: "var(--font-body)", color: "color-mix(in oklab, var(--c-on-primary) 72%, transparent)", margin: 0, maxWidth: 440 }}>
+            本檔六款，售完即止。線上預訂保留至取貨，或天亮後到店現場購買。
+          </p>
+        </div>
+        <div style={{ textAlign: "left" }}>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "color-mix(in oklab, var(--c-on-primary) 70%, transparent)", marginBottom: 12, whiteSpace: "nowrap" }}>距離預訂截止還有</div>
+          <div style={{ filter: "invert(1) hue-rotate(180deg)", opacity: 0.96, display: "inline-block" }}>
+            <Countdown to={PO_DROP_CUTOFF} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function POItems() {
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter) var(--space-6)" }}>
+      <div style={{ marginBottom: "var(--space-6)" }}>
+        <Eyebrow>本檔品項 · On the bench</Eyebrow>
+        <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h2)", color: "var(--c-text)", margin: "var(--space-3) 0 0", letterSpacing: "var(--tracking-heading)" }}>預計出爐</h2>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--space-5)" }}>
+        {PO_ITEMS.map((it) => {
+          const out = it.left === 0;
+          const low = it.left > 0 && it.left <= 5;
+          return (
+            <a key={it.id} href="item.html" style={{ textDecoration: "none" }}>
+              <Card
+                cover={<Plate tone={it.tone} ratio="16 / 11" />}
+                interactive
+                title={it.name}
+                footer={
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: 600, fontSize: "var(--text-h4)", color: "var(--c-accent)" }}>NT${it.price}</span>
+                    {out ? <StatusBadge status="soldout" />
+                      : low ? <StatusBadge status="limited" label={`剩 ${it.left} 份`} />
+                      : <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>可預訂 {it.left} 份</span>}
+                  </div>
+                }
+              >
+                <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-xs)", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--c-text-subtle)", marginBottom: 4 }}>{it.en}</div>
+                {it.desc}
+              </Card>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function POForm() {
+  const [toast, setToast] = React.useState(null);
+  const orderItems = PO_ITEMS.filter((i) => i.left > 0).map((i) => ({ id: i.id, name: i.name, price: i.price, note: i.en }));
+  return (
+    <section style={{ background: "var(--c-surface)", borderTop: "1px solid var(--c-border)", borderBottom: "1px solid var(--c-border)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter)" }}>
+        <div style={{ maxWidth: 560, marginBottom: "var(--space-6)" }}>
+          <Eyebrow>線上預訂 · Pre-order</Eyebrow>
+          <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h1)", color: "var(--c-text)", margin: "var(--space-3) 0 var(--space-3)", letterSpacing: "var(--tracking-heading)" }}>
+            選好品項，<span style={{ fontStyle: "italic", color: "var(--c-accent)" }}>留爐</span>給你
+          </h2>
+          <p style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)", margin: 0 }}>
+            選品項與數量，挑自取或宅配（限台灣本島）。自取請選日期與時段。
+          </p>
+        </div>
+        <div style={{ background: "var(--c-bg)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)", padding: "var(--pad-card)" }}>
+          <PreorderForm
+            items={orderItems}
+            drops={[{ id: "0615", label: "本檔 · 6/15", sub: "6/15（六）06:00 出爐" }]}
+            pickupMethods={[
+              { id: "self", label: "門市自取", note: "赤峰街 7 巷" },
+              { id: "delivery", label: "宅配", note: "限台灣本島，冷藏隔日到" },
+            ]}
+            pickupSlots={[
+              { range: "07:00–09:00", state: "almostfull" },
+              { range: "09:00–11:00", state: "available" },
+              { range: "12:00–14:00", state: "available" },
+              { range: "17:00–19:00", state: "full" },
+            ]}
+            onSubmit={(o) => { setToast(`預訂已收到 · ${o.count} 件 · NT$${o.total}（製作中）`); setTimeout(() => setToast(null), 4200); }}
+          />
+        </div>
+      </div>
+      <div style={{ position: "fixed", left: "50%", bottom: toast ? 28 : -80, transform: "translateX(-50%)",
+        transition: "bottom var(--dur-3) var(--ease-out)", zIndex: "var(--z-toast)",
+        background: "var(--c-primary)", color: "var(--c-on-primary)", padding: "12px 22px",
+        borderRadius: "var(--radius-control)", display: "flex", alignItems: "center", gap: 10, fontFamily: "var(--font-body)", fontSize: 14.5 }}>
+        <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--c-success)" }} />{toast || ""}
+      </div>
+    </section>
+  );
+}
+
+function PONotes() {
+  const notes = [
+    ["取貨與退款", "未取貨視同放棄，恕不退款。請於所選時段內取貨。"],
+    ["客製需求", "蛋糕、禮盒與大量客製品另洽，請至聯絡頁來訊。"],
+    ["售完即止", "每檔限量製作，售完不補。預訂截止後不再追加。"],
+  ];
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter)" }}>
+      <Eyebrow>預訂須知 · Before you order</Eyebrow>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--space-6)", marginTop: "var(--space-5)" }}>
+        {notes.map(([t, d], i) => (
+          <div key={t} style={{ borderTop: "2px solid var(--c-accent)", paddingTop: "var(--space-4)" }}>
+            <div style={{ fontFamily: "var(--font-heading)", fontWeight: 300, fontSize: "var(--text-h3)", color: "color-mix(in oklab, var(--c-text) 30%, transparent)" }}>0{i + 1}</div>
+            <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h4)", color: "var(--c-text)", margin: "var(--space-2) 0 var(--space-2)", letterSpacing: "var(--tracking-heading)" }}>{t}</h3>
+            <p style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)", margin: 0, lineHeight: "var(--leading-relaxed)" }}>{d}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* 訂單查詢 — enter order id; demo: AL + 4 digits found, else empty. Shows skeleton while "loading". */
+function POLookup() {
+  const [id, setId] = React.useState("");
+  const [state, setState] = React.useState("idle"); // idle | loading | found | empty
+  const [result, setResult] = React.useState(null);
+
+  const query = (e) => {
+    e.preventDefault();
+    if (!id.trim()) return;
+    setState("loading"); setResult(null);
+    setTimeout(() => {
+      const ok = /^AL\d{4}$/i.test(id.trim());
+      if (ok) { setResult({ id: id.trim().toUpperCase(), status: "making", items: "深夜可頌 ×2、裸麥酸種 ×1", pickup: "6/15 09:00–11:00 · 門市自取" }); setState("found"); }
+      else setState("empty");
+    }, 900);
+  };
+
+  return (
+    <section style={{ background: "var(--c-surface-2)", borderTop: "1px solid var(--c-border)" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "var(--space-8) var(--gutter)" }}>
+        <div style={{ textAlign: "center", marginBottom: "var(--space-5)" }}>
+          <Eyebrow>訂單查詢 · Order status</Eyebrow>
+          <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h2)", color: "var(--c-text)", margin: "var(--space-3) 0 var(--space-2)", letterSpacing: "var(--tracking-heading)" }}>查詢你的預訂</h2>
+          <p style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)", margin: 0 }}>輸入訂單編號（例如 AL2261）查看製作與取貨狀態。</p>
+        </div>
+        <form onSubmit={query} style={{ display: "flex", gap: "var(--space-3)", alignItems: "flex-end", justifyContent: "center", flexWrap: "wrap" }}>
+          <div style={{ width: 260 }}><Input label="訂單編號 · Order ID" placeholder="AL2261" value={id} onChange={(e) => setId(e.target.value)} /></div>
+          <Button type="submit" variant="primary">查詢</Button>
+        </form>
+
+        <div style={{ marginTop: "var(--space-5)" }}>
+          {state === "loading" ? (
+            <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)", padding: "var(--pad-card)", display: "flex", flexDirection: "column", gap: "0.8rem" }}>
+              <Skeleton variant="line" width="40%" height={16} />
+              <Skeleton variant="line" lines={2} />
+            </div>
+          ) : state === "found" ? (
+            <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)", padding: "var(--pad-card)", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                <span style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)" }}>訂單 {result.id}</span>
+                <StatusBadge status="making" />
+              </div>
+              <div style={{ fontFamily: "var(--font-body)", color: "var(--c-text-muted)" }}>{result.items}</div>
+              <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)" }}>取貨：{result.pickup}</div>
+            </div>
+          ) : state === "empty" ? (
+            <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)" }}>
+              <EmptyState glyph="?" title="查無此訂單" message="請確認訂單編號是否正確，或至聯絡頁來訊詢問。" />
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PreorderPage() {
+  return (
+    <React.Fragment>
+      <Header current="preorder" />
+      <POHero />
+      <POItems />
+      <POForm />
+      <PONotes />
+      <POLookup />
+      <SiteFooter />
+    </React.Fragment>
+  );
+}
+
+window.ALPAGES = window.ALPAGES || {};
+window.ALPAGES.preorder = PreorderPage;
+if (!window.AL_SPA) ReactDOM.createRoot(document.getElementById("root")).render(<PreorderPage />);
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — 品項細節頁 (templated single-item page).
+   Swap ITEM data for any product. Page-local components prefixed IT*. */
+
+const IT_ITEM = {
+  name: "深夜可頌",
+  en: "Midnight Croissant",
+  price: 95,
+  bake: "06:00 出爐",
+  limit: "本檔限量 60 份",
+  status: "accepting", // accepting | closed
+  desc: "以法國 T65 麵粉與發酵奶油，經 72 小時低溫冷藏發酵，手工摺疊 27 層。深夜入爐，天未亮出爐——外殼薄脆，內裡濕潤帶蜂巢氣孔，奶油香氣飽滿而不膩。",
+  specs: [
+    ["麵粉", "法國 T65"],
+    ["奶油", "發酵奶油 · 27 層"],
+    ["發酵", "72 小時低溫冷藏"],
+    ["保存", "當日享用最佳 · 冷凍可 7 天"],
+  ],
+  allergens: [
+    ["麩", "含麩質", true],
+    ["奶", "含奶", true],
+    ["蛋", "含蛋", true],
+    ["堅", "含堅果", false],
+  ],
+  gallery: [{ label: "可頌剖面" }, { label: "27 層摺疊" }, { label: "出爐瞬間" }, { label: "工作檯" }],
+};
+
+const IT_RELATED = [
+  { name: "鹽可頌", en: "Salt butter roll", price: 70, tone: "#2E2A22" },
+  { name: "裸麥酸種", en: "Rye sourdough", price: 180, tone: "#2C2620" },
+  { name: "焦糖肉桂卷", en: "Cinnamon roll", price: 110, tone: "#33241A" },
+];
+
+function ITBreadcrumb() {
+  const sep = <span style={{ color: "var(--c-text-subtle)" }}>/</span>;
+  const link = { fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-muted)", textDecoration: "none" };
+  return (
+    <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-5) var(--gutter) 0", display: "flex", gap: 10, alignItems: "center" }}>
+      <a href="index.html" style={link}>首頁</a>{sep}
+      <a href="preorder.html" style={link}>下次出爐</a>{sep}
+      <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text)" }}>{IT_ITEM.name}</span>
+    </div>
+  );
+}
+
+function ITAllergen({ mark, label, has }) {
+  return (
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 8, opacity: has ? 1 : 0.4 }}>
+      <span style={{
+        width: 26, height: 26, borderRadius: 999, display: "inline-flex", alignItems: "center", justifyContent: "center",
+        fontFamily: "var(--font-heading)", fontSize: 13, fontWeight: 600,
+        color: has ? "var(--c-on-accent)" : "var(--c-text-subtle)",
+        background: has ? "var(--c-accent)" : "transparent",
+        border: has ? "1px solid var(--c-accent)" : "1px dashed var(--c-border-strong)",
+      }}>{mark}</span>
+      <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-muted)", textDecoration: has ? "none" : "line-through" }}>{label}</span>
+    </div>
+  );
+}
+
+function ITDetail() {
+  const open = IT_ITEM.status === "accepting";
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-6) var(--gutter) var(--space-8)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: "var(--space-8)", alignItems: "start" }}>
+        {/* Gallery */}
+        <Gallery ratio="4 / 3" images={IT_ITEM.gallery.map((g) => ({ label: g.label, node: <Plate tone="#322318" ratio="4 / 3" label={g.label} /> }))} />
+
+        {/* Info */}
+        <div>
+          <Eyebrow>本檔品項 · 6/15</Eyebrow>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h1)", color: "var(--c-text)", margin: "var(--space-3) 0 var(--space-1)", letterSpacing: "var(--tracking-heading)" }}>{IT_ITEM.name}</h1>
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", letterSpacing: ".12em", textTransform: "uppercase", color: "var(--c-text-subtle)" }}>{IT_ITEM.en}</div>
+
+          <div style={{ margin: "var(--space-5) 0" }}>
+            <div style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: 600, fontSize: "var(--text-h2)", color: "var(--c-accent)", lineHeight: 1 }}>NT${IT_ITEM.price}</div>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-muted)", marginTop: "var(--space-2)" }}>{IT_ITEM.bake} · {IT_ITEM.limit}</div>
+          </div>
+
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-lead)", lineHeight: "var(--leading-relaxed)", color: "var(--c-text-muted)", margin: 0 }}>{IT_ITEM.desc}</p>
+
+          {/* allergens */}
+          <div style={{ marginTop: "var(--space-5)" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", fontWeight: "var(--fw-semibold)", color: "var(--c-text)", marginBottom: 10 }}>過敏原標示</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-4)" }}>
+              {IT_ITEM.allergens.map(([m, l, has]) => <ITAllergen key={l} mark={m} label={l} has={has} />)}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div style={{ marginTop: "var(--space-6)", display: "flex", alignItems: "center", gap: "var(--space-4)", flexWrap: "wrap" }}>
+            {open ? (
+              <React.Fragment>
+                <Button variant="primary" size="lg" onClick={() => { if (window.AL_SPA) { window.location.hash = "preorder"; } else { window.location.href = "preorder.html"; } }}>加入預訂</Button>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-muted)" }}>
+                  <StatusBadge status="accepting" /> 截止 6/14 22:00
+                </span>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Button variant="outline" size="lg" disabled>本檔已截止</Button>
+                <StatusBadge status="closed" />
+              </React.Fragment>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 製作筆記 specs */}
+      <div style={{ marginTop: "var(--space-8)", borderTop: "1px solid var(--c-border)", paddingTop: "var(--space-6)" }}>
+        <Eyebrow>製作筆記 · How it's made</Eyebrow>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--space-5)", marginTop: "var(--space-5)" }}>
+          {IT_ITEM.specs.map(([k, v]) => (
+            <div key={k}>
+              <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-xs)", letterSpacing: ".14em", textTransform: "uppercase", color: "var(--c-text-subtle)", marginBottom: 6 }}>{k}</div>
+              <div style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)", letterSpacing: "var(--tracking-heading)" }}>{v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ITRelated() {
+  return (
+    <section style={{ background: "var(--c-surface)", borderTop: "1px solid var(--c-border)" }}>
+      <div style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter)" }}>
+        <Eyebrow>一起出爐 · You may also like</Eyebrow>
+        <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h3)", color: "var(--c-text)", margin: "var(--space-3) 0 var(--space-6)", letterSpacing: "var(--tracking-heading)" }}>相關品項</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--space-5)" }}>
+          {IT_RELATED.map((r) => (
+            <a key={r.name} href="item.html" style={{ textDecoration: "none" }}>
+              <Card cover={<Plate tone={r.tone} ratio="16 / 11" />} interactive title={r.name}
+                footer={<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: 600, fontSize: "var(--text-h4)", color: "var(--c-accent)" }}>NT${r.price}</span>
+                  <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-accent)" }}>查看 →</span>
+                </div>}>
+                <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-xs)", letterSpacing: ".1em", textTransform: "uppercase", color: "var(--c-text-subtle)" }}>{r.en}</div>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ItemPage() {
+  return (
+    <React.Fragment>
+      <Header current="item" />
+      <ITBreadcrumb />
+      <ITDetail />
+      <ITRelated />
+      <SiteFooter />
+    </React.Fragment>
+  );
+}
+
+window.ALPAGES = window.ALPAGES || {};
+window.ALPAGES.item = ItemPage;
+if (!window.AL_SPA) ReactDOM.createRoot(document.getElementById("root")).render(<ItemPage />);
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — 關於頁 (品牌故事).
+   Copy is verbatim from the brand-story PDF (pp.2–3); only PDF-extraction
+   radical-form glyphs were normalised to standard Han characters.
+   Page-local components prefixed AB*. */
+
+const AB_SEGMENTS = [
+  {
+    stage: "01 · 家中起點",
+    photo: "這裡放 家中烘焙起點 照片",
+    tone: "#2E2620",
+    lines: [
+      "一開始只是喜歡吃。",
+      "喜歡那種剛出爐的溫度，剛好的甜，奶油融進麵團的香氣。",
+      "後來開始想：如果是我做的呢？",
+      "第一條土司出爐，她覺得不夠好。",
+      "不是因為家人說，是她自己知道——還差一點點。",
+      "就是那「一點點」，讓她沒辦法停下來。",
+    ],
+  },
+  {
+    stage: "02 · 學習",
+    photo: "這裡放 進修上課 照片",
+    tone: "#332A20",
+    lines: [
+      "她去考了烘焙丙級。",
+      "那不是終點，是起點。",
+      "考完繼續上課，麵包、蛋糕、慕斯、糖工、法式甜點。",
+      "每學一樣，就更清楚自己還不夠清楚什麼。",
+      "一堂課接著一堂課，不是因為有人要求，是因為她停不了。",
+      "朋友問：「你是要開店嗎？」",
+      "她說：「我只是想做好。」",
+    ],
+  },
+  {
+    stage: "03 · 求藝",
+    photo: "這裡放 法國職人教室 照片",
+    tone: "#2A2C2E",
+    lines: [
+      "然後她飛去了法國。",
+      "不是旅遊。",
+      "是帶著筆記本，去一間職人教室，從早做到晚，學一個可頌為什麼要折二十七層、奶油為什麼要計算到公克、為什麼在法國，一個塔的邊緣是否平整，會讓師傅皺眉。",
+      "她在那裡學到的不只是配方——",
+      "是對「夠不夠好」這件事的標準，又往上移了一格。",
+    ],
+  },
+  {
+    stage: "04 · 現在",
+    photo: "這裡放 深夜工作室 照片",
+    tone: "#22262C",
+    lines: [
+      "回來之後，夜晚成了她的工作室時間。",
+      "等家裡安靜下來，她才真正開始。",
+      "趁著夜深人靜，揉麵、測溫、計時、出爐。",
+      "這個時間沒有打擾，只有麵團的呼吸和烤箱的溫度。",
+      "她說，這樣做出來的東西比較誠實。",
+      "品項每天不一樣，因為她做的是當天想做、當天覺得好的。",
+      "做完就沒了，不是行銷話術——她從來不留隔夜的給客人吃。",
+      "小店面就在那裡，玻璃窗後面是今天夜裡的成果。",
+      "來了就有，賣完就是完了，明天再來。",
+      "這不是一個「熱愛烘焙的人開的甜點店」那種故事。",
+      "這是一個對自己說「還差一點點」的人，",
+      "一直往前走，走去法國，走回深夜的工作室，",
+      "最後把那份執著揉進麵團裡，每天早上烤給你吃。",
+    ],
+  },
+];
+
+function ABHero() {
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-9) var(--gutter) var(--space-7)", textAlign: "center" }}>
+      <Eyebrow>關於 · Our story</Eyebrow>
+      <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-display)", lineHeight: 1.05,
+        letterSpacing: "var(--tracking-heading)", color: "var(--c-text)", margin: "var(--space-5) 0 0" }}>
+        她只是<span style={{ fontStyle: "italic", color: "var(--c-accent)" }}>想做好</span>
+      </h1>
+    </section>
+  );
+}
+
+function ABSegment({ seg, flip }) {
+  const Text = (
+    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+        letterSpacing: "var(--tracking-eyebrow)", textTransform: "uppercase", color: "var(--c-accent)", marginBottom: "var(--space-5)" }}>{seg.stage}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+        {seg.lines.map((ln, i) => (
+          <p key={i} style={{ fontFamily: "var(--font-heading)", fontWeight: 400,
+            fontSize: "clamp(1.15rem, 0.95rem + 0.7vw, 1.5rem)", lineHeight: 1.75,
+            letterSpacing: "var(--tracking-heading)", color: "var(--c-text)", margin: 0, textWrap: "pretty" }}>{ln}</p>
+        ))}
+      </div>
+    </div>
+  );
+  const Photo = (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      <Plate tone={seg.tone} ratio="4 / 5" label={seg.photo} style={{ width: "100%" }} />
+    </div>
+  );
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-8) var(--gutter)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(2rem, 6vw, 6rem)", alignItems: "stretch" }}>
+        {flip
+          ? <React.Fragment>{Photo}{Text}</React.Fragment>
+          : <React.Fragment>{Text}{Photo}</React.Fragment>}
+      </div>
+    </section>
+  );
+}
+
+function ABEnding() {
+  return (
+    <section style={{ background: "var(--c-primary)", color: "var(--c-on-primary)" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "var(--space-10) var(--gutter)", textAlign: "center" }}>
+        <p style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontStyle: "italic",
+          fontSize: "clamp(1.6rem, 1.1rem + 2.2vw, 2.6rem)", lineHeight: 1.6,
+          letterSpacing: "var(--tracking-heading)", color: "var(--c-on-primary)", margin: 0, textWrap: "balance" }}>
+          你吃到的，是她覺得終於夠好的那一份。
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function AboutPage() {
+  return (
+    <React.Fragment>
+      <Header current="about" />
+      <ABHero />
+      {AB_SEGMENTS.map((seg, i) => <ABSegment key={seg.stage} seg={seg} flip={i % 2 === 1} />)}
+      <ABEnding />
+      <SiteFooter />
+    </React.Fragment>
+  );
+}
+
+window.ALPAGES = window.ALPAGES || {};
+window.ALPAGES.about = AboutPage;
+if (!window.AL_SPA) ReactDOM.createRoot(document.getElementById("root")).render(<AboutPage />);
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — 聯絡頁. Minimal, IG-first.
+   Per brand-story PDF p.5 #05. Page-local components prefixed CT*. */
+
+function CTContact() {
+  return (
+    <section style={{ maxWidth: "var(--container)", margin: "0 auto", padding: "var(--space-9) var(--gutter) var(--space-8)" }}>
+      <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-display)", lineHeight: 1.0,
+        letterSpacing: "var(--tracking-heading)", color: "var(--c-text)", margin: "0 0 var(--space-3)" }}>聯絡</h1>
+      <p style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontStyle: "italic",
+        fontSize: "clamp(1.3rem, 1rem + 1.4vw, 1.9rem)", lineHeight: 1.5, letterSpacing: "var(--tracking-heading)",
+        color: "var(--c-text-muted)", margin: "0 0 var(--space-8)", maxWidth: 560 }}>
+        有貨就開，做完就關，最新狀態看 IG。
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: "var(--space-7)", alignItems: "stretch" }}>
+        {/* Map + address */}
+        <MapEmbed
+          address="[地址待補]"
+          addressEn="Datong District, Taipei"
+          note="玻璃窗後面是今天夜裡的成果。"
+          mapsUrl="#"
+          height={420}
+        />
+
+        {/* IG-first contact rail */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+          {/* IG — primary CTA */}
+          <a href="https://instagram.com/" target="_blank" rel="noreferrer" style={{
+            display: "flex", flexDirection: "column", gap: "var(--space-3)", textDecoration: "none",
+            background: "var(--c-primary)", color: "var(--c-on-primary)", borderRadius: "var(--radius-card)",
+            padding: "var(--pad-card)", flex: 1, justifyContent: "center", minHeight: 220,
+          }}>
+            <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+              letterSpacing: "var(--tracking-eyebrow)", textTransform: "uppercase", color: "var(--c-secondary)" }}>主要通路 · Main channel</span>
+            <span style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "var(--text-h1)", letterSpacing: "var(--tracking-heading)", lineHeight: 1.05 }}>
+              追蹤 IG<br /><span style={{ fontStyle: "italic", color: "var(--c-secondary)" }}>@atelier.ling</span>
+            </span>
+            <span style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "color-mix(in oklab, var(--c-on-primary) 72%, transparent)" }}>
+              今日現貨、開賣公告與客製預訂，都在限動更新 →
+            </span>
+          </a>
+
+          {/* Email */}
+          <div style={{ background: "var(--c-surface)", border: "1px solid var(--c-border)", borderRadius: "var(--radius-card)", padding: "var(--pad-card)" }}>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-label)", fontWeight: "var(--fw-semibold)",
+              letterSpacing: "var(--tracking-eyebrow)", textTransform: "uppercase", color: "var(--c-accent)", marginBottom: "var(--space-2)" }}>Email</div>
+            <a href="mailto:hello@atelier-ling.com" style={{ fontFamily: "var(--font-heading)", fontSize: "var(--text-h4)", color: "var(--c-text)", textDecoration: "none", letterSpacing: "var(--tracking-heading)" }}>
+              hello@atelier-ling.com
+            </a>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "var(--text-sm)", color: "var(--c-text-subtle)", marginTop: "var(--space-2)" }}>客製預訂也可來信，回覆較慢，急件請私訊 IG。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContactPage() {
+  return (
+    <React.Fragment>
+      <Header current="contact" />
+      <CTContact />
+      <SiteFooter />
+    </React.Fragment>
+  );
+}
+
+window.ALPAGES = window.ALPAGES || {};
+window.ALPAGES.contact = ContactPage;
+if (!window.AL_SPA) ReactDOM.createRoot(document.getElementById("root")).render(<ContactPage />);
+
+</script>
+
+<script type="text/babel" data-presets="react">
+/* Atelier Ling — single-page-app router for the shareable / mobile build.
+   Loads after all page scripts (which expose components on window.ALPAGES when
+   window.AL_SPA is set). Hash routing: #home #preorder #item #about #contact.
+   A global click interceptor rewrites the existing <a href="*.html"> links and
+   keeps every in-page link working without touching the page components. */
+
+(function () {
+  const FILE_TO_KEY = { "index.html": "home", "preorder.html": "preorder", "item.html": "item", "about.html": "about", "contact.html": "contact" };
+
+  function keyFromHash() {
+    const h = (window.location.hash || "").replace(/^#\/?/, "");
+    return window.ALPAGES[h] ? h : "home";
+  }
+
+  // Intercept clicks on links that point at the multi-page files → route in-app.
+  document.addEventListener("click", function (e) {
+    const a = e.target.closest && e.target.closest("a");
+    if (!a) return;
+    const href = a.getAttribute("href") || "";
+    if (FILE_TO_KEY[href]) {
+      e.preventDefault();
+      const key = FILE_TO_KEY[href];
+      if (keyFromHash() === key) { window.scrollTo(0, 0); }
+      else { window.location.hash = key; }
+    }
+  });
+
+  function Router() {
+    const [key, setKey] = React.useState(keyFromHash());
+    React.useEffect(function () {
+      const onHash = function () { setKey(keyFromHash()); window.scrollTo(0, 0); };
+      window.addEventListener("hashchange", onHash);
+      return function () { window.removeEventListener("hashchange", onHash); };
+    }, []);
+    const Comp = window.ALPAGES[key] || window.ALPAGES.home;
+    return React.createElement(Comp);
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(Router));
+})();
+
+</script>
+
+</body>
+</html>
