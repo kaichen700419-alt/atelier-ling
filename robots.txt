@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kaichen700419-alt.github.io/atelier-ling/sitemap.xml
